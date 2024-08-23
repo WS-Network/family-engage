@@ -17,18 +17,29 @@ function authorize(roles = []) {
 
         // authorize based on user role
         async (req, res, next) => {
-            const account = await db.Account.findByPk(req.user.id);
+            try {
+                // Check if req.user is defined
+                if (!req.user || !req.user.id) {
+                    return res.status(401).json({ message: 'Unauthorized: Invalid or missing token' });
+                }
 
-            if (!account || (roles.length && !roles.includes(account.role))) {
-                // account no longer exists or role not authorized
-                return res.status(401).json({ message: 'Unauthorized' });
+                const account = await db.Account.findByPk(req.user.id);
+
+                if (!account || (roles.length && !roles.includes(account.role))) {
+                    // account no longer exists or role not authorized
+                    return res.status(401).json({ message: 'Unauthorized: Account does not exist or role not authorized' });
+                }
+
+                // authentication and authorization successful
+                req.user.role = account.role;
+                const refreshTokens = await account.getRefreshTokens();
+                req.user.ownsToken = token => !!refreshTokens.find(x => x.token === token);
+                next();
+            } catch (error) {
+                // Handle unexpected errors
+                console.error('Authorization error:', error);
+                return res.status(500).json({ message: 'Internal Server Error' });
             }
-
-            // authentication and authorization successful
-            req.user.role = account.role;
-            const refreshTokens = await account.getRefreshTokens();
-            req.user.ownsToken = token => !!refreshTokens.find(x => x.token === token);
-            next();
         }
     ];
 }
