@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { NavLink } from '_components';
 import { useUserService } from '_services';
+import Image from 'next/image';
 
 export { Nav };
 
@@ -18,6 +19,9 @@ function Nav() {
 
     return (
         <nav className="navbar navbar-expand navbar-dark bg-dark px-3">
+            <a href="/" className="navbar-brand">
+                <Image src="./Logo1.svg" alt="Logo" width={100} height={100} />
+            </a>
             <div className="navbar-nav">
                 <NavLink href="/" exact className="nav-item nav-link">Home</NavLink>
                 <NavLink href="/users" className="nav-item nav-link">Users</NavLink>
