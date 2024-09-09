@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'globals.css';
 
 export const metadata = {
-    title: 'Next.js 13 - User Registration and Login Example'
+    title: 'family-engage'
 }
 
 export default Layout;

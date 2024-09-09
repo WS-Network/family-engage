@@ -18,8 +18,8 @@ function Users() {
 
     return (
         <>
-            <h1>Users</h1>
-            <Link href="/users/add" className="btn btn-sm btn-success mb-2">Add User</Link>
+            <h1>Family Members</h1>
+            <Link href="/users/add" className="btn btn-sm btn-success mb-2">Add Family Member</Link>
             <table className="table table-striped">
                 <thead>
                     <tr>
