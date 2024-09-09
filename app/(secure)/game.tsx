@@ -15,16 +15,16 @@ export default function Game() {
 
     if (!game) return <div>Loading...</div>;
 
-    return (
-        <div>
-            <h1>{game.title}</h1>
-            <p>{game.description}</p>
-            <iframe
-                src={game.link}
-                style={{ width: '800px', height: '600px', border: 'none' }}
-                allowFullScreen
-                title={game.title}
-            />
-        </div>
-    );
+    // return (
+        // <div>
+        //     <h1>{game.title}</h1>
+        //     <p>{game.description}</p>
+        //     <iframe
+        //         src={game.link}
+        //         style={{ width: '800px', height: '600px', border: 'none' }}
+        //         allowFullScreen
+        //         title={game.title}
+        //     />
+        // </div>
+    // );
 }

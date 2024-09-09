@@ -1,7 +1,7 @@
 'use client'; // Ensures this is a Client Component
 
 import { useRouter } from 'next/navigation'; // Import from next/navigation for App Router
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import { useEffect } from 'react';
 import startwarsimg from '../(public)/assets/StarWars Game.png';
 import flappyBirdicon from '../(public)/assets/Flappy_Bird_icon.png';
@@ -12,7 +12,7 @@ interface Game {
     title: string;
     description: string;
     link: string;
-    imageSrc: string;
+    imageSrc: string | StaticImageData;  // Allow both string and StaticImageData
 }
 
 export default function Home() {
@@ -24,21 +24,21 @@ export default function Home() {
             title: "Paddle Game",
             description: "Move the paddle using motion control, with your whole body",
             link: "https://scratch.mit.edu/projects/237053914/",
-            imageSrc: "https://cdn2.scratch.mit.edu/get_image/project/1050518419_480x360.png",
+            imageSrc: "https://cdn2.scratch.mit.edu/get_image/project/1050518419_480x360.png", // URL as string
         },
         {
             id: 2,
             title: "Star Wars",
             description: "Avoid Space Projectiles",
             link: "https://scratch.mit.edu/projects/237053914/",
-            imageSrc: startwarsimg,
+            imageSrc: startwarsimg,  // StaticImageData
         },
         {
             id: 3,
             title: "Flappy Bird",
             description: "Move the bird using motion sensor, avoid obstacles",
             link: "",
-            imageSrc: flappyBirdicon,
+            imageSrc: flappyBirdicon,  // StaticImageData
         },
     ];
 
@@ -60,7 +60,7 @@ export default function Home() {
                             <div className="thumbnail">
                                 <Image
                                     className="group list-group-image"
-                                    src={game.imageSrc}
+                                    src={game.imageSrc}  // This can be either a string or StaticImageData
                                     alt={game.title}
                                     width={100}
                                     height={100}
