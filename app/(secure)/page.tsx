@@ -5,6 +5,7 @@ import Image, { StaticImageData } from 'next/image';
 import { useEffect } from 'react';
 import startwarsimg from '../(public)/assets/StarWars Game.png';
 import flappyBirdicon from '../(public)/assets/Flappy_Bird_icon.png';
+import Link from 'next/link';
 
 // Define the Game interface for TypeScript
 interface Game {
@@ -44,7 +45,9 @@ export default function Home() {
 
     const handlePlayGame = (game: Game) => {
         // Make sure to navigate when the router is ready
+        console.log('>>>',game);
         router.push(`/game?data=${encodeURIComponent(JSON.stringify(game))}`);
+        
     };
 
     return (
@@ -81,11 +84,11 @@ export default function Home() {
                                         >
                                             <button
                                                 className="btn btn-success"
-                                                onClick={() =>
-                                                    handlePlayGame(game)
-                                                }
+                                                // onClick={() =>
+                                                    // handlePlayGame(game)
+                                                // }
                                             >
-                                                Play Game
+                                            <Link href="/game">Play Game!</Link>
                                             </button>
                                         </div>
                                     </div>
