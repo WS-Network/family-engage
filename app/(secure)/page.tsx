@@ -24,21 +24,21 @@ export default function Home() {
             id: 1,
             title: "Paddle Game",
             description: "Move the paddle using motion control, with your whole body",
-            link: "https://scratch.mit.edu/projects/237053914/",
+            link: "https://scratch.mit.edu/projects/237053914/embed",
             imageSrc: "https://cdn2.scratch.mit.edu/get_image/project/1050518419_480x360.png", // URL as string
         },
         {
             id: 2,
             title: "Star Wars",
             description: "Avoid Space Projectiles",
-            link: "https://scratch.mit.edu/projects/237053914/",
+            link: "https://scratch.mit.edu/projects/341217162/embed",
             imageSrc: startwarsimg,  // StaticImageData
         },
         {
             id: 3,
             title: "Flappy Bird",
             description: "Move the bird using motion sensor, avoid obstacles",
-            link: "",
+            link: "https://scratch.mit.edu/projects/526019080/embed",
             imageSrc: flappyBirdicon,  // StaticImageData
         },
     ];
@@ -46,7 +46,7 @@ export default function Home() {
     const handlePlayGame = (game: Game) => {
         // Make sure to navigate when the router is ready
         console.log('>>>',game);
-        router.push(`/game?data=${encodeURIComponent(JSON.stringify(game))}`);
+        router.push(`/game?game=${encodeURIComponent(JSON.stringify(game))}`);
         
     };
 
@@ -58,7 +58,7 @@ export default function Home() {
                     {Games.map((game, index) => (
                         <div
                             key={index}
-                            className={`item col-xs-4 col-lg-4 list-group-item`}
+                            className={`item col-xs-10 col-lg-100 list-group-item`}
                         >
                             <div className="thumbnail">
                                 <Image
@@ -78,17 +78,19 @@ export default function Home() {
                                     <div className="row">
                                         <div
                                             style={{
-                                                marginLeft: '90%',
+                                                marginLeft: '80%',
                                                 marginBottom: '2%',
                                             }}
                                         >
                                             <button
                                                 className="btn btn-success"
-                                                // onClick={() =>
-                                                    // handlePlayGame(game)
-                                                // }
+                                                onClick={() =>
+                                                    handlePlayGame(game)
+                                                }
                                             >
-                                            <Link href="/game">Play Game!</Link>
+                                            {/* <Link href="/game"> */}
+                                            Play Game!
+                                            {/* </Link> */}
                                             </button>
                                         </div>
                                     </div>
