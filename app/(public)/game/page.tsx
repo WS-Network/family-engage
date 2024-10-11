@@ -68,34 +68,37 @@ export default function Game() {
       {/* Include the Nav component */}
       <Nav />
 
-      {/* Game details */}
-      <div className="game-container">
-        <h1 className="game-title">{game.title}</h1>
-        <iframe
-          ref={iframeRef}  // Attach the iframe reference
-          src={game.link}
-          className="game-iframe"
-          allowFullScreen
-          title={game.title}
-        />
-        <div className="fullscreen-button-container">
-          <button onClick={handleFullscreen} className="btn btn-primary">
-            Fullscreen
-          </button>
+      <div className="game-layout">
+        {/* Game details */}
+        <div className="game-container">
+          <h1 className="game-title">{game.title}</h1>
+          <iframe
+            ref={iframeRef}  // Attach the iframe reference
+            src={game.link}
+            className="game-iframe"
+            allowFullScreen
+            title={game.title}
+          />
+          <div className="fullscreen-button-container">
+            <button onClick={handleFullscreen} className="btn btn-primary">
+              Fullscreen
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Leaderboard Section */}
-      <div className="leaderboard">
-        <h2>Leaderboard <small>(Interest)</small></h2>
-        <ol>
-          {leaderboardItems.map((item, index) => (
-            <li key={index}>
-              <span className="name">{item.name}</span>
-              <span className="percent">{item.percent}</span>
-            </li>
-          ))}
-        </ol>
+        {/* Leaderboard Section */}
+        <div className="leaderboard">
+          <h2>Leaderboard <small>(Interest)</small></h2>
+          <ol>
+            {leaderboardItems.map((item, index) => (
+              <li key={index}>
+                <span className="name">{item.name}</span>
+                <span className="percent">{item.percent}</span>
+              </li>
+            ))}
+          </ol>
+          <p><small>Front-End Frameworks 2016</small></p>
+        </div>
       </div>
     </>
   );
