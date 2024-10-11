@@ -4,12 +4,27 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import { Nav } from '_components';
 import { Spinner } from '_components';
+import './page.css';  // Import the CSS file
 
 interface GameData {
   title: string;
   description: string;
   link: string;
 }
+
+interface LeaderboardItem {
+  name: string;
+  percent: string;
+}
+
+const leaderboardItems: LeaderboardItem[] = [
+  { name: 'React', percent: '74%' },
+  { name: 'Vue', percent: '49%' },
+  { name: 'Angular 2', percent: '45%' },
+  { name: 'Angular', percent: '27%' },
+  { name: 'Ember', percent: '26%' },
+  { name: 'Backbone', percent: '20%' },
+];
 
 export default function Game() {
   const searchParams = useSearchParams();
@@ -46,7 +61,7 @@ export default function Game() {
 
   if (error) return <div>Error: {error}</div>;
 
-  if (!game) return <Spinner/>;
+  if (!game) return <Spinner />;
 
   return (
     <>
@@ -54,21 +69,33 @@ export default function Game() {
       <Nav />
 
       {/* Game details */}
-      <div>
-        <h1 style={{marginLeft: 50, marginTop: 50}}>{game.title}</h1>
-        {/* <p>{game.description}</p> */}
+      <div className="game-container">
+        <h1 className="game-title">{game.title}</h1>
         <iframe
           ref={iframeRef}  // Attach the iframe reference
           src={game.link}
-          style={{ marginLeft: 50, marginTop: 20,width: '800px', height: '600px', border: 'none' }}
+          className="game-iframe"
           allowFullScreen
           title={game.title}
         />
-        <div style={{ marginLeft: '50%',marginTop: '20px' }}>
+        <div className="fullscreen-button-container">
           <button onClick={handleFullscreen} className="btn btn-primary">
             Fullscreen
           </button>
         </div>
+      </div>
+
+      {/* Leaderboard Section */}
+      <div className="leaderboard">
+        <h2>Leaderboard <small>(Interest)</small></h2>
+        <ol>
+          {leaderboardItems.map((item, index) => (
+            <li key={index}>
+              <span className="name">{item.name}</span>
+              <span className="percent">{item.percent}</span>
+            </li>
+          ))}
+        </ol>
       </div>
     </>
   );
