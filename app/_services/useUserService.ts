@@ -16,7 +16,7 @@ interface SubUser {
 const initialState = {
     users: undefined,
     user: undefined,
-    currentUser: undefined
+    currentUser: undefined,
 };
 
 const userStore = create<IUserStore>(() => initialState);
@@ -39,11 +39,11 @@ function useUserService(): IUserService {
                 const currentUser = await fetch.post('/api/account/login', { username, password });
                 userStore.setState({ ...initialState, currentUser });
 
-                // get return url from query parameters or default to '/'
+                // Get return URL from query parameters or default to '/'
                 const returnUrl = searchParams.get('returnUrl') || '/';
                 router.push(returnUrl);
             } catch (error: any) {
-                alertService.error(error);
+                alertService.error(error.message);
             }
         },
 
@@ -58,7 +58,7 @@ function useUserService(): IUserService {
                 alertService.success('Registration successful', true);
                 router.push('/account/login');
             } catch (error: any) {
-                alertService.error(error);
+                alertService.error(error.message);
             }
         },
 
@@ -67,7 +67,7 @@ function useUserService(): IUserService {
                 const fetchedUsers = await fetch.get('/api/users');
                 userStore.setState({ users: fetchedUsers });
             } catch (error: any) {
-                alertService.error(error);
+                alertService.error(error.message);
             }
         },
 
@@ -77,7 +77,7 @@ function useUserService(): IUserService {
                 const fetchedUser = await fetch.get(`/api/users/${id}`);
                 userStore.setState({ user: fetchedUser });
             } catch (error: any) {
-                alertService.error(error);
+                alertService.error(error.message);
             }
         },
 
@@ -100,7 +100,7 @@ function useUserService(): IUserService {
                 await fetch.post('/api/users', user);
                 alertService.success('User created successfully');
             } catch (error: any) {
-                alertService.error(error);
+                alertService.error(error.message);
             }
         },
 
@@ -108,42 +108,55 @@ function useUserService(): IUserService {
             try {
                 await fetch.put(`/api/users/${id}`, params);
 
-                // update current user if the user updated their own record
+                // Update current user if the user updated their own record
                 if (id === currentUser?.id) {
                     userStore.setState({ currentUser: { ...currentUser, ...params } });
                 }
                 alertService.success('User updated successfully');
             } catch (error: any) {
-                alertService.error(error);
+                alertService.error(error.message);
             }
         },
 
         delete: async (id) => {
             try {
-                // set isDeleting prop to true on user
+                // Set isDeleting prop to true on user
                 userStore.setState({
-                    users: users?.map(x => {
-                        if (x.id === id) { x.isDeleting = true; }
+                    users: users?.map((x) => {
+                        if (x.id === id) {
+                            x.isDeleting = true;
+                        }
                         return x;
-                    })
+                    }),
                 });
 
-                // delete user
+                // Delete user
                 const response = await fetch.delete(`/api/users/${id}`);
 
-                // remove deleted user from state
-                userStore.setState({ users: users?.filter(x => x.id !== id) });
+                // Remove deleted user from state
+                userStore.setState({ users: users?.filter((x) => x.id !== id) });
 
-                // logout if the user deleted their own record
+                // Logout if the user deleted their own record
                 if (response.deletedSelf) {
                     router.push('/account/login');
                 }
                 alertService.success('User deleted successfully');
             } catch (error: any) {
-                alertService.error(error);
+                alertService.error(error.message);
             }
-        }
-    }
+        },
+
+        // New Method for Creating Sub-User
+        createSubUser: async (subUser: SubUser) => {
+            try {
+                await fetch.post('/api/subusers', subUser); // Ensure this endpoint exists on your backend
+                alertService.success('Sub-user created successfully');
+            } catch (error: any) {
+                alertService.error('Failed to create sub-user: ' + error.message);
+                throw error;
+            }
+        },
+    };
 }
 
 // interfaces
@@ -174,4 +187,7 @@ interface IUserService extends IUserStore {
     create: (user: IUser) => Promise<void>;
     update: (id: string, params: Partial<IUser>) => Promise<void>;
     delete: (id: string) => Promise<void>;
+
+    // New method to create sub-user
+    createSubUser: (subUser: SubUser) => Promise<void>;
 }
