@@ -32,7 +32,9 @@ function AddEdit({ title }: { title: string }) {
             // Create sub-user
             await userService.createSubUser(data); // Assuming createSubUser is a method in the userService
             const message = 'Sub-user added';
-
+            // !!!!! You have work here, apparently the list is reading the subUsers but not created
+            
+            
             // Redirect to user list with success message
             router.push('/users');
             alertService.success(message, true);

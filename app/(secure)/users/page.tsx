@@ -30,6 +30,7 @@ export default function Users() {
         const fetchUser = async () => {
             try {
                 const data: User | null = await userService.getCurrent();
+                console.log('data', data);
                 setUser(data); // This will be a User object or null
             } catch (error) {
                 console.error("Error fetching user:", error);

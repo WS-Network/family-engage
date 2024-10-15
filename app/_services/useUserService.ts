@@ -94,6 +94,20 @@ function useUserService(): IUserService {
                 return null; // Return null on error
             }
         },
+        getSubUsers: async (userId: string) => {
+            try {
+                // Use fetch.get and pass headers if supported
+                const subUsers = await fetch.get('/api/subusers', {
+                    headers: {
+                        'userId': userId,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                return subUsers;
+            } catch (error: any) {
+                throw new Error(error.message || 'Failed to fetch sub-users');
+            }
+        },
 
         create: async (user) => {
             try {
@@ -149,7 +163,7 @@ function useUserService(): IUserService {
         // New Method for Creating Sub-User
         createSubUser: async (subUser: SubUser) => {
             try {
-                await fetch.post('/api/subusers', subUser); // Ensure this endpoint exists on your backend
+                await fetch.post('/api/users/subusers', subUser); // Ensure this endpoint exists on your backend
                 alertService.success('Sub-user created successfully');
             } catch (error: any) {
                 alertService.error('Failed to create sub-user: ' + error.message);
@@ -190,4 +204,5 @@ interface IUserService extends IUserStore {
 
     // New method to create sub-user
     createSubUser: (subUser: SubUser) => Promise<void>;
+    getSubUsers: (userId: string) => Promise<SubUser[]>;
 }
