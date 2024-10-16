@@ -29,12 +29,16 @@ function AddEdit({ title }: { title: string }) {
     async function onSubmit(data: SubUserFormValues) {
         alertService.clear();
         try {
-            // Create sub-user
-            await userService.createSubUser(data); // Assuming createSubUser is a method in the userService
+            // Fetch the current user ID (assuming you have a getCurrent method)
+            const currentUser = await userService.getCurrent();
+            if (!currentUser || !currentUser.id) {
+                throw new Error('Main user ID not found');
+            }
+
+            // Create sub-user with userId and subUserData
+            await userService.createSubUser(currentUser.id, data); // Now passing userId and subUserData
             const message = 'Sub-user added';
-            // !!!!! You have work here, apparently the list is reading the subUsers but not created
-            
-            
+            alertService.success(message)
             // Redirect to user list with success message
             router.push('/users');
             alertService.success(message, true);

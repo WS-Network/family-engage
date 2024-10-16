@@ -1,23 +1,43 @@
-// app/api/subusers/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
-import {db} from '../../../_helpers/server/db'
+import { db } from '../../../_helpers/server/db';
 
 const User = db.User;
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    const { username, firstName, lastName } = body;
+    const { userId, username, firstName, lastName } = body;  // Expect the main user's ID
 
     // Validate input
-    if (!username || !firstName || !lastName) {
+    if (!userId || !username || !firstName || !lastName) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Example logic for creating a sub-user
-    const newSubUser = { id: Date.now(), username, firstName, lastName };
+    try {
+        // Find the main user by userId
+        const mainUser = await User.findById(userId);
 
-    return NextResponse.json({ message: 'Sub-user created', subUser: newSubUser }, { status: 201 });
+        if (!mainUser) {
+            return NextResponse.json({ error: 'Main user not found' }, { status: 404 });
+        }
+
+        // Create a new sub-user object
+        const newSubUser = {
+            username,
+            firstName,
+            lastName
+        };
+
+        // Add the sub-user to the main user's subUsers array
+        mainUser.subUsers.push(newSubUser);
+
+        // Save the updated user document
+        await mainUser.save();
+
+        return NextResponse.json({ message: 'Sub-user created', subUser: newSubUser }, { status: 201 });
+    } catch (error) {
+        console.error('Error creating sub-user:', error);
+        return NextResponse.json({ error: 'Failed to create sub-user' }, { status: 500 });
+    }
 }
 
 export async function GET(req: Request) {
