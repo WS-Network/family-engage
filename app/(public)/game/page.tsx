@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Nav } from '_components';
 import { Spinner } from '_components';
 import './page.css';  // Import the CSS file
-
+import { useUserService } from '_services';
 interface GameData {
   title: string;
   description: string;
@@ -26,12 +26,29 @@ const leaderboardItems: LeaderboardItem[] = [
   { name: 'Backbone', percent: '20%' },
 ];
 
+type SubUser = {
+  username: string;
+  firstName: string;
+  lastName: string;
+};
+
+type User = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  subUsers: SubUser[];
+};
+
 export default function Game() {
   const searchParams = useSearchParams();
   const [game, setGame] = useState<GameData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null); // Create a ref for the iframe
-
+  const userService = useUserService();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
     const gameParam = searchParams.get('game');
     if (gameParam) {
@@ -43,6 +60,23 @@ export default function Game() {
       }
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+        try {
+            const data: User | null = await userService.getCurrent();
+            console.log('data', data);
+            setUser(data);
+        } catch (error) {
+            console.error("Error fetching user:", error);
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchUser();
+  }, [userService]);
 
   const handleFullscreen = () => {
     if (iframeRef.current) {
@@ -60,8 +94,8 @@ export default function Game() {
   };
 
   if (error) return <div>Error: {error}</div>;
-
-  if (!game) return <Spinner />;
+  if (loading) return <Spinner />;
+  if (!game || !user) return <Spinner />;
 
   return (
     <>
@@ -88,16 +122,15 @@ export default function Game() {
 
         {/* Leaderboard Section */}
         <div className="leaderboard">
-          <h2>Leaderboard <small>(Interest)</small></h2>
+          <h2>Leaderboard</h2>
           <ol>
-            {leaderboardItems.map((item, index) => (
+            {user.subUsers.map((subUser, index) => (
               <li key={index}>
-                <span className="name">{item.name}</span>
-                <span className="percent">{item.percent}</span>
+                {/* <span className="name">{subUser.firstName} {subUser.lastName}</span> */}
+                <span className="username">{subUser.username}</span>
               </li>
             ))}
           </ol>
-          <p><small>Front-End Frameworks 2016</small></p>
         </div>
       </div>
     </>

@@ -6,6 +6,7 @@ import { NavLink } from '_components';
 import { useUserService } from '_services';
 import Image from 'next/image';
 import logo from '../(public)/assets/Logo.png'
+import './Nav.css';  // Import the CSS file
 
 export { Nav };
 
@@ -32,6 +33,7 @@ function Nav() {
                         : <span>Logout</span>
                     }
                 </button>
+                <NavLink href="/game" className="nav-item nav-link friends-link">Friends</NavLink>
             </div>
         </nav>
     );
