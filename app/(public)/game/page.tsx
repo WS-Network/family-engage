@@ -6,6 +6,7 @@ import { Nav } from '_components';
 import { Spinner } from '_components';
 import './page.css';  // Import the CSS file
 import { useUserService } from '_services';
+
 interface GameData {
   title: string;
   description: string;
@@ -110,6 +111,7 @@ export default function Game() {
             ref={iframeRef}  // Attach the iframe reference
             src={game.link}
             className="game-iframe"
+            allow="camera; microphone; fullscreen" // Add camera and microphone permissions here
             allowFullScreen
             title={game.title}
           />
