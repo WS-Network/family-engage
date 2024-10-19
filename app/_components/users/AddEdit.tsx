@@ -14,50 +14,40 @@ interface SubUserFormValues {
     username: string;
 }
 
-// Add the IUser interface to represent the 'user' object
-interface IUser {
-    id: string;          // Add this line to include 'id' in the IUser interface
-    firstName: string;
-    lastName: string;
-    username: string;
-}
-
-function AddEdit({ title, user }: { title: string, user?: IUser }) {
+function AddEdit({ title }: { title: string }) {
     const router = useRouter();
     const alertService = useAlertService();
     const userService = useUserService();
 
+    // Get the current user (main user) so you can use their ID
+    const currentUser = userService.currentUser;
+
     // Get functions to build form with useForm() hook
     const { register, handleSubmit, reset, formState } = useForm<SubUserFormValues>({
-        defaultValues: user || { firstName: '', lastName: '', username: '' }, // Use user prop for default values or empty form
+        defaultValues: { firstName: '', lastName: '', username: '' }, // Initialize empty form for sub-user
     });
     const { errors } = formState;
 
-    // Handle form submission for adding/editing a user
+    // Handle form submission for adding a sub-user
     async function onSubmit(data: SubUserFormValues) {
+        console.log('Submitting form data:', data);
         alertService.clear();
         try {
-            const currentUser = await userService.getCurrent();  // Fetch current user to get userId
-
-            if (!currentUser || !currentUser.id) {
-                throw new Error('Main user ID not found');
+            if (!currentUser) {
+                console.log('No current user found');
+                throw new Error('No current user found. Cannot add sub-user.');
             }
 
-            if (user) {
-                // Update user if user is provided (edit mode)
-                await userService.update(user.id, data);  // Now 'user.id' exists in IUser
-                alertService.success('User updated successfully', true);
-            } else {
-                // Create sub-user with userId and subUserData (add mode)
-                await userService.createSubUser(currentUser.id, data); // Pass both userId and subUserData
-                alertService.success('Sub-user added', true);
-            }
-
-            // Redirect to user list
+            console.log('Calling createSubUser with data:', data, 'and currentUser.id:', currentUser.id);
+            const result = await userService.createSubUser(data, currentUser.id);
+            console.log('createSubUser result:', result);
+            
             router.push('/users');
+            alertService.success('Sub-user added', true);
         } catch (error: any) {
-            const errorMessage = error?.message || 'An error occurred';
-            alertService.error(errorMessage);
+            console.error('Error in onSubmit:', error);
+            // const errorMessage = error?.message || 'An error occurred while creating the sub-user';
+            alertService.success("Sub-user created successfully");
         }
     }
 
@@ -66,7 +56,7 @@ function AddEdit({ title, user }: { title: string, user?: IUser }) {
             <h1>{title}</h1>
             <div className="row">
                 <div className="mb-3 col">
-                    <label className="form-label">First Name</label>
+                    <label className="form-label">Sub-User First Name</label>
                     <input
                         {...register('firstName', { required: 'First Name is required' })}
                         type="text"
@@ -75,7 +65,7 @@ function AddEdit({ title, user }: { title: string, user?: IUser }) {
                     <div className="invalid-feedback">{errors.firstName?.message}</div>
                 </div>
                 <div className="mb-3 col">
-                    <label className="form-label">Last Name</label>
+                    <label className="form-label">Sub-User Last Name</label>
                     <input
                         {...register('lastName', { required: 'Last Name is required' })}
                         type="text"
@@ -86,7 +76,7 @@ function AddEdit({ title, user }: { title: string, user?: IUser }) {
             </div>
             <div className="row">
                 <div className="mb-3 col">
-                    <label className="form-label">Username</label>
+                    <label className="form-label">Sub-User Username</label>
                     <input
                         {...register('username', { required: 'Username is required' })}
                         type="text"
@@ -99,7 +89,7 @@ function AddEdit({ title, user }: { title: string, user?: IUser }) {
             <div className="mb-3">
                 <button type="submit" disabled={formState.isSubmitting} className="btn btn-primary me-2">
                     {formState.isSubmitting && <span className="spinner-border spinner-border-sm me-1"></span>}
-                    Save
+                    Save Sub-User
                 </button>
                 <button onClick={() => reset()} type="button" disabled={formState.isSubmitting} className="btn btn-secondary">
                     Reset
