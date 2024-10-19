@@ -1,0 +1,26 @@
+.navbar-nav {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  
+  .nav-item {
+    margin-right: 15px;
+  }
+  
+  .friends-link {
+    margin-left: auto;
+    margin-bottom: auto;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .nav-left-group {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-right-group {
+    margin-left: auto;
+  }
