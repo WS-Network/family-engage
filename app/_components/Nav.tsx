@@ -7,26 +7,59 @@ import Image from "next/image";
 import logo from "../(public)/assets/Logo.png";
 import "./Nav.css"; // Import the CSS file
 import FriendsModal from "./FriendsModal";
+import { useEffect } from "react";
+
 
 export { Nav };
 
+
+interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+}
+
+
 function Nav() {
   const [loggingOut, setLoggingOut] = useState<boolean>(false);
-  const userService = useUserService();
   const [friendsModal, setFriendsModal] = useState<boolean>(false);
+  const [allUsers, setAllUsers] = useState<User[]>([]); // Define state
+
+  const userService = useUserService();
+
 
   async function logout() {
     setLoggingOut(true);
     await userService.logout();
   }
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+        const users = await userService.getAll();
+        setAllUsers(users);
+    };
+    fetchAllUsers();
+}, [userService]);
+
+const handleAddFriend = (friendId: string) => {
+  userService.addFriend(friendId);
+};
+
+
+
+  // HTML   JSX or TSX
 
   return (
     <>
       {friendsModal && (
+
         <FriendsModal
-          friendsModal={friendsModal}
-          setFriendsModal={setFriendsModal}
+        friendsModal={true}
+        setFriendsModal={setFriendsModal}
+        friends={allUsers}  // If required, or remove if not needed
+        onAddFriend={(friendId) => handleAddFriend(friendId)}
         />
+        
       )}
 
       <nav className="navbar navbar-expand navbar-dark bg-dark px-3">
@@ -56,7 +89,7 @@ function Nav() {
             onClick={() => setFriendsModal(!friendsModal)}
             className="nav-item nav-link friends-link"
           >
-            Friends
+            Add Friends
           </p>
         </div>
       </nav>

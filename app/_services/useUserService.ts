@@ -66,10 +66,13 @@ function useUserService(): IUserService {
             try {
                 const fetchedUsers = await fetch.get('/api/users');
                 userStore.setState({ users: fetchedUsers });
+                return fetchedUsers; // Ensure this returns the array of users
             } catch (error: any) {
                 alertService.error(error.message);
+                return []; // Return an empty array if there's an error
             }
         },
+        
 
         getById: async (id) => {
             userStore.setState({ user: undefined });
@@ -182,6 +185,15 @@ function useUserService(): IUserService {
                 throw error;
             }
         },
+        addFriend: async (userId: string) => {
+            try {
+                await fetch.post(`/api/users/${userId}/addFriend`);
+                alertService.success('Friend added successfully');
+            } catch (error: any) {
+                alertService.error('Failed to add friend: ' + error.message);
+            }
+        }
+        
     };
 }
 
@@ -217,4 +229,6 @@ interface IUserService extends IUserStore {
     // New method to create sub-user
     createSubUser: (subUser: SubUser, userId: string) => Promise<void>;
     getSubUsers: (userId: string) => Promise<SubUser[]>;
+
+    addFriend: (userId: string) => Promise<void>;  // Add this line
 }
