@@ -1,0 +1,381 @@
+/* GamingProfile.css */
+
+/* Container */
+.gaming-profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: calc(100vh - 60px); /* Adjust based on your navbar height */
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.profile-avatar {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.profile-avatar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid #4a90e2;
+    object-fit: cover;
+}
+
+.level-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #4a90e2;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.profile-header-top h1 {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.profile-bio {
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.edit-profile-button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.edit-profile-button:hover {
+    background-color: #357abd;
+}
+
+.profile-stats {
+    display: flex;
+    gap: 30px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Played Games Section */
+.played-games-section {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.played-games-section h2 {
+    margin: 0 0 20px 0;
+    color: #333;
+}
+
+.played-games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.played-game-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.played-game-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.game-icon {
+    font-size: 32px;
+    min-width: 40px;
+    text-align: center;
+}
+
+.game-details {
+    flex: 1;
+}
+
+.game-details h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.game-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
+}
+
+/* Achievements Section */
+.achievements-section {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.achievements-section h2 {
+    margin: 0 0 20px 0;
+    color: #333;
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.achievement-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid;
+    transition: transform 0.2s;
+}
+
+.achievement-card:hover {
+    transform: translateY(-2px);
+}
+
+.achievement-icon {
+    font-size: 32px;
+    min-width: 40px;
+    text-align: center;
+}
+
+.achievement-info {
+    flex: 1;
+}
+
+.achievement-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.achievement-description {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.achievement-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.achievement-game {
+    font-size: 12px;
+    color: #666;
+    background: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.achievement-rarity {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.achievement-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #666;
+}
+
+/* Loading State */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    font-size: 18px;
+    color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-avatar {
+        margin-bottom: 20px;
+    }
+
+    .profile-stats {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .profile-header-top {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .played-games-grid,
+    .achievements-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .game-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .achievement-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .achievement-meta,
+    .achievement-stats {
+        flex-direction: column;
+        gap: 5px;
+        align-items: center;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.gaming-profile-container {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Custom Scrollbar */
+.gaming-profile-container {
+    scrollbar-width: thin;
+    scrollbar-color: #4a90e2 #f0f0f0;
+}
+
+.gaming-profile-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.gaming-profile-container::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+
+.gaming-profile-container::-webkit-scrollbar-thumb {
+    background-color: #4a90e2;
+    border-radius: 4px;
+}
+
+/* Additional Hover Effects */
+.stat-item:hover .stat-value {
+    color: #4a90e2;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
+.achievement-card:hover .achievement-icon {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+}
+
+/* Empty State Styles */
+.no-achievements,
+.no-games {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.no-achievements p,
+.no-games p {
+    margin: 10px 0 0;
+    font-size: 14px;
+}
+
+/* Error State */
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    text-align: center;
+}

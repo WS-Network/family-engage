@@ -72,6 +72,9 @@ function Nav() {
                     <NavLink href="/users" className="nav-item nav-link">
                         Family Members
                     </NavLink>
+                    <NavLink href="/gaming-profile" className="nav-item nav-link">
+                        Profile
+                    </NavLink>
                     <button
                         onClick={logout}
                         className="btn btn-link nav-item nav-link"
@@ -87,7 +90,7 @@ function Nav() {
                     <p
                         
                         onClick={() => setFriendsModal(!friendsModal)}
-                        className="nav-item nav-link friends-link"
+                        className="nav-item nav-link friends-link-add"
                     >
                         Add Families
                     </p>
@@ -95,7 +98,7 @@ function Nav() {
                         onClick={() => setFriendModal2(!friendModal2)}
                         className="nav-item nav-link friends-link" // Added the same styling class
                     >
-                        My Families
+                        Families
                     </p>
                 </div>
             </nav>
