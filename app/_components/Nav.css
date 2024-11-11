@@ -1,32 +1,39 @@
+.global-navbar {
+  z-index: 50;
+}
+
 .navbar-nav {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-  }
-  
-  .nav-item {
-    margin-right: 15px;
-  }
-  
-  .friends-link {
-    margin-left: auto;
-    margin-bottom: auto;
-    cursor: pointer;
-    text-align: center;
-  }
-  .friends-link-add {
-    margin-left: 1250px;
-    margin-bottom: auto;
-    cursor: pointer;
-    text-align: center;
-  }
-  
-  .nav-left-group {
-    display: flex;
-    align-items: center;
-  }
-  
-  .nav-right-group {
-    margin-left: auto;
-  }
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-item-container {
+  width: 20rem;
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-right: 2rem;
+}
+
+.nav-item {
+  width: 10rem;
+  height: 3rem;
+  border: none;
+  border-radius: 0.6rem;
+  background-color: rgb(21, 115, 71);
+  color: white;
+  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.nav-item:hover {
+  background-color: rgb(18, 94, 58);
+}
