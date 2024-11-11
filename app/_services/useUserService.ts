@@ -38,8 +38,6 @@ function useUserService(): IUserService {
             try {
                 const currentUser = await fetch.post('/api/account/login', { username, password });
                 userStore.setState({ ...initialState, currentUser });
-
-                // Get return URL from query parameters or default to '/'
                 const returnUrl = searchParams.get('returnUrl') || '/';
                 router.push(returnUrl);
             } catch (error: any) {
@@ -66,13 +64,12 @@ function useUserService(): IUserService {
             try {
                 const fetchedUsers = await fetch.get('/api/users');
                 userStore.setState({ users: fetchedUsers });
-                return fetchedUsers; // Ensure this returns the array of users
+                return fetchedUsers;
             } catch (error: any) {
                 alertService.error(error.message);
-                return []; // Return an empty array if there's an error
+                return [];
             }
         },
-        
 
         getById: async (id) => {
             userStore.setState({ user: undefined });
@@ -84,7 +81,7 @@ function useUserService(): IUserService {
             }
         },
 
-        getCurrent: async (): Promise<IUser | null> => {
+        getCurrent: async () => {
             try {
                 if (!currentUser) {
                     const fetchedUser: IUser = await fetch.get('/api/users/current');
@@ -94,12 +91,12 @@ function useUserService(): IUserService {
                 return currentUser;
             } catch (error: any) {
                 alertService.error('Unable to fetch current user.');
-                return null; // Return null on error
+                return null;
             }
         },
+
         getSubUsers: async (userId: string) => {
             try {
-                // Use fetch.get and pass headers if supported
                 const subUsers = await fetch.get('/api/subusers', {
                     headers: {
                         'userId': userId,
@@ -124,8 +121,6 @@ function useUserService(): IUserService {
         update: async (id, params) => {
             try {
                 await fetch.put(`/api/users/${id}`, params);
-
-                // Update current user if the user updated their own record
                 if (id === currentUser?.id) {
                     userStore.setState({ currentUser: { ...currentUser, ...params } });
                 }
@@ -137,7 +132,6 @@ function useUserService(): IUserService {
 
         delete: async (id) => {
             try {
-                // Set isDeleting prop to true on user
                 userStore.setState({
                     users: users?.map((x) => {
                         if (x.id === id) {
@@ -147,13 +141,9 @@ function useUserService(): IUserService {
                     }),
                 });
 
-                // Delete user
                 const response = await fetch.delete(`/api/users/${id}`);
-
-                // Remove deleted user from state
                 userStore.setState({ users: users?.filter((x) => x.id !== id) });
 
-                // Logout if the user deleted their own record
                 if (response.deletedSelf) {
                     router.push('/account/login');
                 }
@@ -163,41 +153,87 @@ function useUserService(): IUserService {
             }
         },
 
-        // New Method for Creating Sub-User
         createSubUser: async (subUser: SubUser, userId: string) => {
             try {
-                // Send the sub-user and userId in the body as individual properties
                 const response = await fetch.post('/api/users/subusers', {
                     username: subUser.username,
                     firstName: subUser.firstName,
                     lastName: subUser.lastName,
-                    userId,  // Ensure userId is sent as part of the request body
+                    userId,
                 });
-        
+
                 if (!response.ok) {
                     throw new Error(`Failed to create sub-user: ${response.statusText}`);
                 }
-        
+
                 alertService.success('Sub-user created successfully');
             } catch (error: any) {
-                // alertService.error('Failed to create sub-user: ' + error.message);
                 alertService.success('Sub-user created successfully');
                 throw error;
             }
         },
-        addFriend: async (userId: string) => {
+
+        addFriend: async (friendId: string) => {
             try {
-                await fetch.post(`/api/users/${userId}/addFriend`);
-                alertService.success('Friend added successfully');
+                const userId = currentUser?.id || (await fetch.get('/api/users/current')).id;
+                if (!userId) {
+                    throw new Error('No current user found');
+                }
+
+                await fetch.post('/api/users/friends', {
+                    userId,
+                    friendId
+                });
+
+                alertService.success('Family member added successfully');
             } catch (error: any) {
-                alertService.error('Failed to add friend: ' + error.message);
+                alertService.error(error.message || 'Failed to add family member');
+                throw error;
+            }
+        },
+
+        removeFriend: async (friendId: string) => {
+            try {
+                const userId = currentUser?.id || (await fetch.get('/api/users/current')).id;
+                if (!userId) {
+                    throw new Error('No current user found');
+                }
+
+                await fetch.delete('/api/users/friends', {
+                    body: JSON.stringify({
+                        userId,
+                        friendId
+                    })
+                });
+
+                alertService.success('Family member removed successfully');
+            } catch (error: any) {
+                alertService.error(error.message || 'Failed to remove family member');
+                throw error;
+            }
+        },
+
+        getFriends: async () => {
+            try {
+                const userId = currentUser?.id || (await fetch.get('/api/users/current')).id;
+                if (!userId) {
+                    throw new Error('No current user found');
+                }
+
+                const response = await fetch.get('/api/users/friends', {
+                    headers: {
+                        'userId': userId
+                    }
+                });
+
+                return response;
+            } catch (error: any) {
+                alertService.error(error.message || 'Failed to fetch family members');
+                throw error;
             }
         }
-        
     };
 }
-
-// interfaces
 
 interface IUser {
     id: string;
@@ -206,7 +242,7 @@ interface IUser {
     username: string;
     password: string;
     isDeleting?: boolean;
-    subUsers: SubUser[]; // Add subUsers here
+    subUsers: SubUser[];
 }
 
 interface IUserStore {
@@ -219,16 +255,15 @@ interface IUserService extends IUserStore {
     login: (username: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     register: (user: IUser) => Promise<void>;
-    getAll: () => Promise<void>;
+    getAll: () => Promise<any>;
     getById: (id: string) => Promise<void>;
     getCurrent: () => Promise<IUser | null>;
     create: (user: IUser) => Promise<void>;
     update: (id: string, params: Partial<IUser>) => Promise<void>;
     delete: (id: string) => Promise<void>;
-
-    // New method to create sub-user
     createSubUser: (subUser: SubUser, userId: string) => Promise<void>;
     getSubUsers: (userId: string) => Promise<SubUser[]>;
-
-    addFriend: (userId: string) => Promise<void>;  // Add this line
+    addFriend: (friendId: string) => Promise<void>;
+    removeFriend: (friendId: string) => Promise<void>;
+    getFriends: () => Promise<any>;
 }

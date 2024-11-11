@@ -85,6 +85,7 @@ function Nav() {
                         )}
                     </button>
                     <p
+                        
                         onClick={() => setFriendsModal(!friendsModal)}
                         className="nav-item nav-link friends-link"
                     >

@@ -4,8 +4,8 @@ import { useUserService } from "_services";
 import "./FriendModal2.css";
 
 interface FriendsModalProps {
-    friendsModal: boolean;  // Changed from friendModal2 to match the other modal
-    setFriendsModal: (value: boolean) => void;  // Changed from setFriendModal2 to match
+    friendsModal: boolean;
+    setFriendsModal: (value: boolean) => void;
     friends: User[];
     onAddFriend: (friendId: string) => void;
 }
@@ -21,73 +21,69 @@ function FriendsModal2({ friendsModal, setFriendsModal, friends }: FriendsModalP
     const [currentFriends, setCurrentFriends] = useState<User[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [loading, setLoading] = useState(true);
-    const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const userService = useUserService();
 
     useEffect(() => {
-        const getCurrentUser = async () => {
-            try {
-                const user = await userService.getCurrent();
-                if (user) {
-                    setCurrentUserId(user.id);
-                    fetchCurrentFriends(user.id);
-                }
-            } catch (error) {
-                console.error('Error getting current user:', error);
-            }
-        };
-
         if (friendsModal) {
-            getCurrentUser();
+            console.log("Modal opened, fetching friends..."); // Debug log
+            fetchFriends();
         }
-    }, [friendsModal, userService]);
+    }, [friendsModal]);
 
-    const fetchCurrentFriends = async (userId: string) => {
+    const fetchFriends = async () => {
+        console.log("Starting to fetch friends..."); // Debug log
         try {
             setLoading(true);
+            setError(null);
+
+            // Get current user first
+            console.log("Getting current user..."); // Debug log
+            const currentUser = await userService.getCurrent();
+            console.log("Current user:", currentUser); // Debug log
+
+            if (!currentUser) {
+                throw new Error("No current user found");
+            }
+
+            // Use the direct fetch approach first for debugging
+            console.log("Fetching friends for user:", currentUser.id); // Debug log
             const response = await fetch('/api/users/friends', {
                 headers: {
-                    'userId': userId
+                    'userId': currentUser.id
                 }
             });
-            if (response.ok) {
-                const data = await response.json();
-                setCurrentFriends(data);
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch friends: ${response.statusText}`);
             }
-        } catch (error) {
-            console.error('Error fetching friends:', error);
+
+            const data = await response.json();
+            console.log("Friends data received:", data); // Debug log
+            setCurrentFriends(data);
+        } catch (err) {
+            console.error('Error in fetchFriends:', err);
+            setError(err instanceof Error ? err.message : 'Failed to load families');
         } finally {
             setLoading(false);
         }
     };
 
     const handleRemoveFriend = async (friendId: string) => {
-        if (!currentUserId) return;
         try {
-            const response = await fetch('/api/users/friends', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userId: currentUserId,
-                    friendId: friendId
-                })
-            });
-
-            if (response.ok) {
-                setCurrentFriends(prev => prev.filter(friend => friend.id !== friendId));
-            }
-        } catch (error) {
-            console.error('Error removing friend:', error);
+            await userService.removeFriend(friendId);
+            await fetchFriends(); // Refresh the list after removal
+        } catch (err) {
+            console.error('Error removing family:', err);
+            setError('Failed to remove family');
         }
     };
 
     // Filter friends based on search query
     const filteredFriends = currentFriends.filter(friend => 
-        friend.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        friend.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        friend.lastName.toLowerCase().includes(searchQuery.toLowerCase())
+        friend.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        friend.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        friend.lastName?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -106,10 +102,29 @@ function FriendsModal2({ friendsModal, setFriendsModal, friends }: FriendsModalP
                         className="search-input"
                     />
                     
+                    {error && (
+                        <div className="error-message">
+                            {error}
+                            <button 
+                                className="retry-button"
+                                onClick={fetchFriends}
+                            >
+                                Retry
+                            </button>
+                        </div>
+                    )}
+                    
                     {loading ? (
-                        <div className="loading">Loading...</div>
+                        <div className="loading">
+                            Loading families...
+                            <div className="loading-status">
+                                Please wait while we fetch your family list...
+                            </div>
+                        </div>
                     ) : filteredFriends.length === 0 ? (
-                        <div className="no-friends">No families found</div>
+                        <div className="no-friends">
+                            {searchQuery ? 'No families found matching your search' : 'No families added yet'}
+                        </div>
                     ) : (
                         <div className="friends-list">
                             {filteredFriends.map((friend) => (

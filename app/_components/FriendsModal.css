@@ -1,58 +1,48 @@
 /* FriendsModal.css */
-
 /* Backdrop */
 .friends-backdrop {
+  display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .friends-backdrop.active {
-  opacity: 1;
-  visibility: visible;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 100px;
 }
 
 /* Modal */
 .friends-modal {
-  background-color: #fff;
-  width: 400px;
-  max-height: 80vh;
+  background-color: white;
+  padding: 20px;
   border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.friends-modal.active {
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
   opacity: 1;
   transform: translateY(0);
 }
 
 /* Close Button */
 .close-button {
-  font-size: 18px;
+  font-size: 24px;
   cursor: pointer;
-  padding: 10px;
-  text-align: right;
-  color: #999;
+  color: #666;
   position: absolute;
+  right: 20px;
+  top: 20px;
 }
 
 .close-button:hover {
-  color: #333;
+  color: #000;
 }
 
 /* Modal Content */
@@ -60,7 +50,6 @@
   padding: 0 16px 16px;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
 }
 
 /* Header */
@@ -72,11 +61,11 @@
 
 /* Search Bar */
 .search-bar {
-  margin-bottom: 10px;
-  padding: 8px 12px;
-  font-size: 16px;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 4px;
   outline: none;
 }
 
@@ -86,11 +75,9 @@
 
 /* Scrollable List */
 .friends-list {
+  margin-top: 16px;
   overflow-y: auto;
-  flex-grow: 1;
   max-height: 60vh;
-  border-top: 1px solid #eee;
-  padding-top: 10px;
 }
 
 /* Friend Item */
@@ -98,12 +85,26 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
 }
 
 .friend-item:last-child {
   border-bottom: none;
+}
+
+.friend-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.friend-name {
+  font-weight: 500;
+}
+
+.friend-username {
+  color: #666;
+  font-size: 0.9em;
 }
 
 /* Add Friend Button */
@@ -119,4 +120,18 @@
 
 .add-friend-button:hover {
   background-color: #218838;
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+/* No Friends State */
+.no-friends {
+  text-align: center;
+  padding: 20px;
+  color: #666;
 }
