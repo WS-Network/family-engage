@@ -82,6 +82,7 @@ export default function Home() {
                         style={{
                           right: "1rem",
                           bottom: "1rem",
+                          backgroundColor: "#0CA4BD",
                         }}
                         className="btn btn-success position-absolute"
                         onClick={() => handlePlayGame(game)}

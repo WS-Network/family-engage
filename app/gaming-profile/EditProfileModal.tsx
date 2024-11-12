@@ -71,7 +71,10 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentProfi
             <div className="edit-profile-modal">
                 <div className="edit-profile-header">
                     <h2>Edit Profile</h2>
-                    <button className="close-button" onClick={onClose}>&times;</button>
+                    <button className="close-button" onClick={()=>{
+                        console.log('edit ?')
+                    }}>
+                    </button>
                 </div>
                 
                 <form onSubmit={handleSubmit} className="edit-profile-form">
