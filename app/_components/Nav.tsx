@@ -61,7 +61,7 @@ function Nav() {
         />
       )}
 
-      <nav className="global-navbar navbar fixed-top navbar-expand bg-light navbar-light shadow-sm px-2">
+      <nav className="global-navbar navbar fixed-top navbar-expand bg-white navbar-light shadow-sm px-2">
         <a href="/" className="navbar-brand px-2">
           <Image src={logo} alt="Logo" width={70} height={50} />
         </a>
