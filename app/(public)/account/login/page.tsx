@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import './login.css';
-import 'boxicons/css/boxicons.min.css';
-import { useForm } from 'react-hook-form';
+import React, { useState } from "react";
+import "./login.css";
+import "boxicons/css/boxicons.min.css";
+import { useForm } from "react-hook-form";
 // import { Calendar } from 'react-calendar';
 // import 'react-calendar/dist/Calendar.css'; // Import react-calendar styles
 // import { Checkbox } from '@radix-ui/react-checkbox';
-import { useUserService } from '_services';
+import { useUserService } from "_services";
+import Popup from "_components/Popup";
 
 interface LoginFormData {
   username: string;
@@ -39,8 +40,16 @@ export default function Login() {
   const loginForm = useForm<LoginFormData>();
   const registerForm = useForm<RegisterFormData>();
 
-  const { register: loginRegister, handleSubmit: loginHandleSubmit, formState: loginFormState } = loginForm;
-  const { register: registerRegister, handleSubmit: registerHandleSubmit, formState: registerFormState } = registerForm;
+  const {
+    register: loginRegister,
+    handleSubmit: loginHandleSubmit,
+    formState: loginFormState,
+  } = loginForm;
+  const {
+    register: registerRegister,
+    handleSubmit: registerHandleSubmit,
+    formState: registerFormState,
+  } = registerForm;
 
   const { errors: loginErrors } = loginFormState;
   const { errors: registerErrors } = registerFormState;
@@ -48,7 +57,7 @@ export default function Login() {
   const userService = useUserService();
 
   async function onSubmit(data: LoginFormData) {
-    console.log('Login Data:', data.username, data.password);
+    console.log("Login Data:", data.username, data.password);
     await userService.login(data.username, data.password);
   }
 
@@ -59,7 +68,7 @@ export default function Login() {
       ...data,
     };
 
-    console.log('Transformed Registration Data:', user);
+    console.log("Transformed Registration Data:", user);
     await userService.register(user);
 
     // Show the popup after successful registration
@@ -72,46 +81,58 @@ export default function Login() {
 
   function handlePopupSubmit() {
     if (!birthDate || !acceptedTerms) {
-      alert('Please complete all fields before proceeding.');
+      alert("Please complete all fields before proceeding.");
       return;
     }
 
-    console.log('Birthdate:', birthDate);
-    console.log('Accepted Terms:', acceptedTerms);
+    console.log("Birthdate:", birthDate);
+    console.log("Accepted Terms:", acceptedTerms);
 
     setShowPopup(false);
   }
 
   return (
-    <div className={`container ${isActive ? 'active' : ''}`}>
+    <div className={`container ${isActive ? "active" : ""}`}>
       {/* Login Form */}
       <div className="form-box login">
         <form onSubmit={loginHandleSubmit(onSubmit)}>
           <div className="input-box">
             <input
-              {...loginRegister('username', { required: 'Username is required' })}
+              {...loginRegister("username", {
+                required: "Username is required",
+              })}
               placeholder="Username"
               type="text"
-              className={`form-control ${loginErrors.username ? 'is-invalid' : ''}`}
+              className={`form-control ${
+                loginErrors.username ? "is-invalid" : ""
+              }`}
             />
             <i className="bx bxs-user"></i>
           </div>
           <div className="input-box">
             <input
-              {...loginRegister('password', { required: 'Password is required' })}
+              {...loginRegister("password", {
+                required: "Password is required",
+              })}
               placeholder="Password"
               type="password"
-              className={`form-control ${loginErrors.password ? 'is-invalid' : ''}`}
+              className={`form-control ${
+                loginErrors.password ? "is-invalid" : ""
+              }`}
             />
             <i className="bx bxs-lock-alt"></i>
           </div>
           <div className="forgot-link">
             <a href="#">Forgot Password?</a>
           </div>
-          <button type="submit" className="btn">Login</button>
+          <button type="submit" className="btn">
+            Login
+          </button>
           <p>or login with social platforms</p>
           <div className="social-icons">
-            <a href="#"><i className="bx bxl-google"></i></a>
+            <a href="#">
+              <i className="bx bxl-google"></i>
+            </a>
           </div>
         </form>
       </div>
@@ -121,47 +142,68 @@ export default function Login() {
         <form onSubmit={registerHandleSubmit(onSubmitRegister)}>
           <div className="input-box">
             <input
-              {...registerRegister('firstName', { required: 'First Name is required' })}
+              {...registerRegister("firstName", {
+                required: "First Name is required",
+              })}
               placeholder="First Name"
               type="text"
-              className={`form-control ${registerErrors.firstName ? 'is-invalid' : ''}`}
+              className={`form-control ${
+                registerErrors.firstName ? "is-invalid" : ""
+              }`}
             />
             <i className="bx bxs-user"></i>
           </div>
           <div className="input-box">
             <input
-              {...registerRegister('lastName', { required: 'Last Name is required' })}
+              {...registerRegister("lastName", {
+                required: "Last Name is required",
+              })}
               placeholder="Last Name"
               type="text"
-              className={`form-control ${registerErrors.lastName ? 'is-invalid' : ''}`}
+              className={`form-control ${
+                registerErrors.lastName ? "is-invalid" : ""
+              }`}
             />
             <i className="bx bxs-envelope"></i>
           </div>
           <div className="input-box">
             <input
-              {...registerRegister('username', { required: 'Username is required' })}
+              {...registerRegister("username", {
+                required: "Username is required",
+              })}
               placeholder="Username"
               type="text"
-              className={`form-control ${registerErrors.username ? 'is-invalid' : ''}`}
+              className={`form-control ${
+                registerErrors.username ? "is-invalid" : ""
+              }`}
             />
             <i className="bx bxs-envelope"></i>
           </div>
           <div className="input-box">
             <input
-              {...registerRegister('password', {
-                required: 'Password is required',
-                minLength: { value: 6, message: 'Password must be at least 6 characters' }
+              {...registerRegister("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
               })}
               placeholder="Password"
               type="password"
-              className={`form-control ${registerErrors.password ? 'is-invalid' : ''}`}
+              className={`form-control ${
+                registerErrors.password ? "is-invalid" : ""
+              }`}
             />
             <i className="bx bxs-lock-alt"></i>
           </div>
-          <button type="submit" className="btn">Register</button>
+          <button type="submit" className="btn">
+            Register
+          </button>
           <p>or register with social platforms</p>
           <div className="social-icons">
-            <a href="#"><i className="bx bxl-google"></i></a>
+            <a href="#">
+              <i className="bx bxl-google"></i>
+            </a>
           </div>
         </form>
       </div>
@@ -171,17 +213,30 @@ export default function Login() {
         <div className="toggle-panel toggle-left">
           <h1>Family Engage</h1>
           <p>Don't have an account?</p>
-          <button className="btn register-btn" onClick={() => setIsActive(true)}>Register</button>
+          <button
+            className="btn register-btn"
+            onClick={() => setIsActive(true)}
+          >
+            Register
+          </button>
         </div>
 
         <div className="toggle-panel toggle-right">
           <h1>Family Engage</h1>
           <p>Already have an account?</p>
-          <button className="btn login-btn" onClick={() => setIsActive(false)}>Login</button>
+          <button className="btn login-btn" onClick={() => setIsActive(false)}>
+            Login
+          </button>
         </div>
       </div>
 
-     
+      {showPopup && (
+        <Popup
+          onClose={() => {
+            setShowPopup(false);
+          }}
+        />
+      )}
     </div>
   );
 }
