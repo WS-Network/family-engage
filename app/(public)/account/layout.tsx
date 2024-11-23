@@ -15,7 +15,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     <>
       <Alert />
       <div className="w-100 min-vh-100 bg-light d-flex flex-column justify-content-center align-items-center">
-        <h1 className="text-dark fw-bolder mb-3">Family Engage</h1>
+        {/* <h1 className="text-dark fw-bolder mb-3">Family Engage</h1> */}
         {children}
       </div>
     </>
