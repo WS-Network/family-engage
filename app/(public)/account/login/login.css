@@ -1,18 +1,7 @@
-/* Centering the container */
-body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100vw;
-  /* background-color: #f0f0f0;  */
-  margin-right: 43%;
-}
 
-/* Main container styling */
-.container {
+
+/* Main containerr styling */
+.containerr {
   position: relative;
   width: 850px;
   height: 550px;
@@ -23,12 +12,12 @@ body {
   overflow: hidden;
 }
 
-.container h1 {
+.containerr h1 {
   font-size: 36px;
   margin: -10px 0;
 }
 
-.container p {
+.containerr p {
   font-size: 14.5px;
   margin: 15px 0;
 }
@@ -52,7 +41,7 @@ form {
   transition: 0.6s ease-in-out 1.2s, visibility 0s 1s;
 }
 
-.container.active .form-box {
+.containerr.active .form-box {
   right: 50%;
 }
 
@@ -60,7 +49,7 @@ form {
   visibility: hidden;
 }
 
-.container.active .form-box.register {
+.containerr.active .form-box.register {
   visibility: visible;
 }
 
@@ -103,7 +92,7 @@ form {
   color: #333;
 }
 
-.btn {
+.btnn {
   width: 100%;
   height: 48px;
   background: #7494ec;
@@ -149,7 +138,7 @@ form {
   transition: 1.8s ease-in-out;
 }
 
-.container.active .toggle-box::before {
+.containerr.active .toggle-box::before {
   left: 50%;
 }
 
@@ -171,7 +160,7 @@ form {
   transition-delay: 1.2s;
 }
 
-.container.active .toggle-panel.toggle-left {
+.containerr.active .toggle-panel.toggle-left {
   left: -50%;
   transition-delay: 0.6s;
 }
@@ -181,7 +170,7 @@ form {
   transition-delay: 0.6s;
 }
 
-.container.active .toggle-panel.toggle-right {
+.containerr.active .toggle-panel.toggle-right {
   right: 0;
   transition-delay: 1.2s;
 }
@@ -190,7 +179,7 @@ form {
   margin-bottom: 20px;
 }
 
-.toggle-panel .btn {
+.toggle-panel .btnn {
   width: 160px;
   height: 46px;
   background: transparent;
@@ -199,7 +188,7 @@ form {
 }
 
 @media screen and (max-width: 650px) {
-  .container {
+  .containerr {
     height: calc(100vh - 40px);
   }
 
@@ -209,7 +198,7 @@ form {
     height: 70%;
   }
 
-  .container.active .form-box {
+  .containerr.active .form-box {
     right: 0;
     bottom: 30%;
   }
@@ -222,12 +211,12 @@ form {
     border-radius: 20vw;
   }
 
-  .container.active .toggle-box::before {
+  .containerr.active .toggle-box::before {
     left: 0;
     top: 70%;
   }
 
-  .container.active .toggle-panel.toggle-left {
+  .containerr.active .toggle-panel.toggle-left {
     left: 0;
     top: -30%;
   }
@@ -246,7 +235,7 @@ form {
     bottom: -30%;
   }
 
-  .container.active .toggle-panel.toggle-right {
+  .containerr.active .toggle-panel.toggle-right {
     bottom: 0;
   }
 }

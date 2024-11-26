@@ -40,7 +40,7 @@ export default function Users() {
     };
 
     fetchUser(); // Call the async function inside useEffect
-  }, [userService]);
+  }, []);
 
   if (loading) {
     return <Spinner />;
@@ -48,8 +48,8 @@ export default function Users() {
 
   return (
     <>
-      <h1 className="fw-bold">Family Members</h1>
-      <Link href="/users/add" className="btn btn-sm btn-success mb-2">
+      {/* <h1 className="fw-bold">Family Members</h1> */}
+      <Link href="/users/add" className="btn btn-sm btn-primary mb-2" style={{marginTop: "20px"}}>
         Add Family Member
       </Link>
       <table className="table table-striped">

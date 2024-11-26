@@ -27,13 +27,13 @@ function Nav() {
     await userService.logout();
   }
 
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      const users = await userService.getAll();
-      setAllUsers(users);
-    };
-    fetchAllUsers();
-  }, [userService]);
+  // useEffect(() => {
+  //   const fetchAllUsers = async () => {
+  //     // const users = await userService.getAll();
+  //     // setAllUsers(users);
+  //   };
+  //   fetchAllUsers();
+  // }, [userService]);
 
   const handleAddFriend = (friendId: string) => {
     userService.addFriend(friendId);
@@ -76,6 +76,7 @@ function Nav() {
           <NavLink
             href="/users"
             className="nav-link text-center text-nowrap fw-semibold"
+            onClick={()=> {console.log("clicked")}}
           >
             Family Members
           </NavLink>

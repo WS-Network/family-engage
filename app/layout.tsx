@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "globals.css";
+import { Toaster } from "sonner";
 
 export const metadata = {
   title: "family-engage",
@@ -12,7 +13,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <body>
         {children}
-
+        <Toaster />
         {/* credits */}
         <div className="text-center">
           {/* <p>

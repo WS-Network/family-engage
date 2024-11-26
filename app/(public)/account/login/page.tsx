@@ -92,7 +92,7 @@ export default function Login() {
   }
 
   return (
-    <div className={`container ${isActive ? "active" : ""}`}>
+    <div className={`containerr ${isActive ? "active" : ""}`}>
       {/* Login Form */}
       <div className="form-box login">
         <form onSubmit={loginHandleSubmit(onSubmit)}>
@@ -125,7 +125,7 @@ export default function Login() {
           <div className="forgot-link">
             <a href="#">Forgot Password?</a>
           </div>
-          <button type="submit" className="btn">
+          <button type="submit" className="btnn">
             Login
           </button>
           <p>or login with social platforms</p>

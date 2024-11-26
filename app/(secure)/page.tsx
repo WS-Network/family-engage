@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import startwarsimg from "../(public)/assets/StarWars Game.png";
 import flappyBirdicon from "../(public)/assets/Flappy_Bird_icon.png";
 import Link from "next/link";
+// import './page.css'
 
 // Define the Game interface for TypeScript
 interface Game {
@@ -52,8 +53,8 @@ export default function Home() {
 
   return (
     <>
-      <h1 className="fw-bold">Games</h1>
-      <div className="container">
+      
+      <div style={{marginTop: "80px"}} className="container">
         <div id="products" className="row list-group">
           {Games.map((game, index) => (
             <div key={index} className="list-group-item">

@@ -1,7 +1,7 @@
 /* Game styles */
 .game-container {
   margin-left: 50px;
-  margin-top: 50px;
+  margin-top: 150px;
 }
 
 .game-title {
@@ -26,7 +26,7 @@
   background-color: #123;
   color: #eee;
   width: 450px;
-  margin-top: 50px;
+  /* margin-top: 20px; */
   border-radius: 5px;
   box-shadow: 2px 5px 15px rgba(18, 35, 51, 0.5); /* Adjusted rgba value */
   text-align: left;

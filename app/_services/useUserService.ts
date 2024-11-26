@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAlertService } from '_services';
 import { useFetch } from '_helpers/client';
-
+import { Toaster, toast } from 'sonner'
 export { useUserService };
 
 // Define SubUser interface
@@ -53,7 +53,8 @@ function useUserService(): IUserService {
         register: async (user) => {
             try {
                 await fetch.post('/api/account/register', user);
-                alertService.success('Registration successful', true);
+                // alertService.success('Registration successful', true);
+                toast.success('Registration successful, go back to login');
                 router.push('/account/login');
             } catch (error: any) {
                 alertService.error(error.message);

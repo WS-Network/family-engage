@@ -89,3 +89,136 @@
 .friends-list {
     margin-top: 16px;
 }
+.modal-navbar {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    
+}
+
+.tab-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #f1f1f1;
+    cursor: pointer;
+    border-radius: 2rem;
+
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.tab-button.active {
+    background-color: #007bff;
+    border-radius: 2rem;
+    color: white;
+}
+
+.tab-button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.friend-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.messages-tab {
+    padding: 1rem;
+}
+
+.messages-list {
+    list-style: none;
+    padding: 0;
+}
+
+.message-item {
+    padding: 0.5rem;
+    border-bottom: 1px solid #ccc;
+}
+
+.message-user {
+    font-weight: bold;
+}
+.chat-ui {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.chat-messages {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    height: 200px;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+}
+
+.chat-input {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.chat-input button {
+    padding: 0.5rem 1rem;
+}
+.chat-messages {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    height: 200px; /* Increased height for better visibility */
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.chat-message {
+    display: inline-block;
+    max-width: 70%;
+    padding: 0.5rem 1rem;
+    border-radius: 16px;
+    font-size: 14px;
+    word-wrap: break-word;
+    margin-bottom: 0.5rem;
+}
+
+.user-message {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end; /* Align sent messages to the right */
+    text-align: right;
+    border-top-right-radius: 0; /* Style for the bubble effect */
+}
+
+.friend-message {
+    background-color: #f1f1f1;
+    color: black;
+    align-self: flex-start; /* Align received messages to the left */
+    text-align: left;
+    border-top-left-radius: 0; /* Style for the bubble effect */
+}
+
+.chat-input {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.chat-input button {
+    padding: 0.5rem 1rem;
+}
