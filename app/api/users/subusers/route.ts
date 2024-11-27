@@ -5,32 +5,21 @@ const User = db.User;
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    const { userId, username, firstName, lastName } = body;  // Expect the main user's ID
+    const { userId, username, firstName, lastName } = body;
 
-    // Validate input
     if (!userId || !username || !firstName || !lastName) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     try {
-        // Find the main user by userId
         const mainUser = await User.findById(userId);
 
         if (!mainUser) {
             return NextResponse.json({ error: 'Main user not found' }, { status: 404 });
         }
 
-        // Create a new sub-user object
-        const newSubUser = {
-            username,
-            firstName,
-            lastName
-        };
-
-        // Add the sub-user to the main user's subUsers array
+        const newSubUser = { username, firstName, lastName };
         mainUser.subUsers.push(newSubUser);
-
-        // Save the updated user document
         await mainUser.save();
 
         return NextResponse.json({ message: 'Sub-user created', subUser: newSubUser }, { status: 201 });
@@ -41,10 +30,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: Request) {
-    const currentUserId = req.headers.get('userId');  // Get the current user ID from the headers/session
-    
+    const currentUserId = req.headers.get('userId');
+
     try {
-        // Fetch the current user and populate the subUsers field
         const user = await User.findById(currentUserId).populate('subUsers').exec();
 
         if (!user) {
@@ -54,5 +42,53 @@ export async function GET(req: Request) {
         return NextResponse.json(user.subUsers, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: 'Failed to fetch sub-users' }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: NextRequest) {
+    console.log("DELETE route hit");
+
+    try {
+        // Parse the incoming request body
+        const body = await req.json();
+        console.log("Received body:", body);
+
+        const { userId, username } = body;
+
+        // Validate input fields
+        if (!userId || !username) {
+            console.error("Validation error: Missing required fields", { userId, username });
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        }
+
+        // Find the main user by userId
+        const mainUser = await User.findById(userId);
+        console.log("Main user found:", mainUser);
+
+        if (!mainUser) {
+            console.error("Main user not found with ID:", userId);
+            return NextResponse.json({ error: 'Main user not found' }, { status: 404 });
+        }
+
+        // Filter out the sub-user by username
+        const updatedSubUsers = mainUser.subUsers.filter(
+            (subUser: { username: string }) => subUser.username !== username
+        );
+        console.log("Updated sub-users list:", updatedSubUsers);
+
+        if (updatedSubUsers.length === mainUser.subUsers.length) {
+            console.error("Sub-user not found with username:", username);
+            return NextResponse.json({ error: 'Sub-user not found' }, { status: 404 });
+        }
+
+        // Save the updated sub-users list
+        mainUser.subUsers = updatedSubUsers;
+        await mainUser.save();
+        console.log("Sub-user deleted successfully");
+
+        return NextResponse.json({ message: 'Sub-user deleted successfully' }, { status: 200 });
+    } catch (error) {
+        console.error("Unexpected error in DELETE route:", error);
+        return NextResponse.json({ error: 'Failed to delete sub-user' }, { status: 500 });
     }
 }

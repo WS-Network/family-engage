@@ -109,3 +109,33 @@
   + .custom-checkbox::after {
   opacity: 1;
 }
+
+.hyperlink {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.hyperlink:hover {
+  color: darkblue;
+}
+
+.document-viewer {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.close-doc-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.close-doc-btn:hover {
+  background-color: #d32f2f;
+}

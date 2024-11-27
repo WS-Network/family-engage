@@ -173,6 +173,40 @@ function useUserService(): IUserService {
                 throw error;
             }
         },
+        deleteSubUser: async (username: string, userId: string) => {
+            try {
+                console.log("Sending DELETE request with:", { userId, username });
+        
+                const response = await fetch.delete('/api/users/subusers', {
+                    method: 'DELETE',
+                    body: JSON.stringify({
+                        userId,
+                        username,
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                const responseData = await response.json();
+                console.log("Backend response:", responseData);
+        
+                if (!response.ok) {
+                    throw new Error(responseData.error || 'Failed to delete sub-user');
+                }
+        
+                alertService.success('Sub-user deleted successfully');
+            } catch (error: any) {
+                console.error("Error deleting sub-user:", error.message);
+                alertService.error(error.message || 'Failed to delete sub-user');
+                throw error;
+            }
+        },
+        
+        
+        
+        
+        
 
         addFriend: async (friendId: string) => {
             try {
@@ -267,4 +301,5 @@ interface IUserService extends IUserStore {
     addFriend: (friendId: string) => Promise<void>;
     removeFriend: (friendId: string) => Promise<void>;
     getFriends: () => Promise<any>;
+    deleteSubUser: (username: string, userId: string) => Promise<void>;
 }
