@@ -76,7 +76,7 @@
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-    border-color: #4a90e2;
+    border-color: #0CA4BD;
     outline: none;
 }
 
@@ -92,7 +92,7 @@
     height: 150px;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid #4a90e2;
+    border: 3px solid #0CA4BD;
 }
 
 .avatar-preview img {
@@ -106,7 +106,7 @@
 }
 
 .upload-button {
-    background-color: #4a90e2;
+    background-color: #0CA4BD;
     color: white;
     padding: 8px 16px;
     border-radius: 6px;

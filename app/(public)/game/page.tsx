@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
-import { Nav } from '_components';
-import { Spinner } from '_components';
-import './page.css';  // Import the CSS file
-import { useUserService } from '_services';
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState, useRef } from "react";
+import { Nav } from "_components";
+import { Spinner } from "_components";
+import "./page.css"; // Import the CSS file
+import { useUserService } from "_services";
 
 interface GameData {
   title: string;
@@ -17,15 +17,6 @@ interface LeaderboardItem {
   name: string;
   percent: string;
 }
-
-const leaderboardItems: LeaderboardItem[] = [
-  { name: 'React', percent: '74%' },
-  { name: 'Vue', percent: '49%' },
-  { name: 'Angular 2', percent: '45%' },
-  { name: 'Angular', percent: '27%' },
-  { name: 'Ember', percent: '26%' },
-  { name: 'Backbone', percent: '20%' },
-];
 
 type SubUser = {
   username: string;
@@ -41,6 +32,9 @@ type User = {
   subUsers: SubUser[];
 };
 
+// Define the invited global variable
+let invited = false; // Set this to true when a user is invited
+
 export default function Game() {
   const searchParams = useSearchParams();
   const [game, setGame] = useState<GameData | null>(null);
@@ -49,35 +43,41 @@ export default function Game() {
   const userService = useUserService();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
-    const gameParam = searchParams.get('game');
+    const gameParam = searchParams.get("game");
     if (gameParam) {
       try {
         const gameData = JSON.parse(gameParam) as GameData;
         setGame(gameData);
       } catch (error) {
-        setError('Failed to load game data');
+        setError("Failed to load game data");
       }
     }
   }, [searchParams]);
 
   useEffect(() => {
     const fetchUser = async () => {
-        try {
-            const data: User | null = await userService.getCurrent();
-            console.log('data', data);
-            setUser(data);
-        } catch (error) {
-            console.error("Error fetching user:", error);
-            setUser(null);
-        } finally {
-            setLoading(false);
-        }
+      try {
+        const data: User | null = await userService.getCurrent();
+        console.log("data", data);
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchUser();
   }, [userService]);
+
+  // New useEffect to check and update invited state from localStorage
+  useEffect(() => {
+    const isInvited = localStorage.getItem("invited") === "true"; // Check invited value
+    invited = isInvited; // Update the global variable
+  }, []);
 
   const handleFullscreen = () => {
     if (iframeRef.current) {
@@ -94,6 +94,12 @@ export default function Game() {
     }
   };
 
+  const closeSecondGame = () => {
+    invited = false; // Set the invited variable to false
+    localStorage.setItem("invited", "false"); // Update localStorage
+    window.location.reload(); // Refresh the page to reset the layout
+  };
+
   if (error) return <div>Error: {error}</div>;
   if (loading) return <Spinner />;
   if (!game || !user) return <Spinner />;
@@ -104,37 +110,93 @@ export default function Game() {
       <Nav />
 
       <div className="game-layout">
-        {/* Game details */}
-        <div className="game-container">
-          <h1 className="game-title">{game.title}</h1>
+  {invited ? (
+    <>
+      {/* Games displayed side by side */}
+      <div className="game-side-by-side">
+        <div className="game-instance">
           <iframe
-            ref={iframeRef}  // Attach the iframe reference
+            ref={iframeRef}
             src={game.link}
             className="game-iframe"
-            allow="camera; microphone; fullscreen" // Add camera and microphone permissions here
+            allow="camera; microphone; fullscreen"
             allowFullScreen
-            title={game.title}
+            title={`${game.title} - Instance 1`}
           />
-          <div className="fullscreen-button-container">
-            <button onClick={handleFullscreen} className="btn btn-primary">
-              Fullscreen
-            </button>
-          </div>
         </div>
+        <div className="game-instance">
+          <iframe
+            src={game.link}
+            className="game-iframe"
+            allow="camera; microphone; fullscreen"
+            allowFullScreen
+            title={`${game.title} - Instance 2`}
+          />
+          <button className="close-button" onClick={closeSecondGame}>
+            X
+          </button>
+        </div>
+      </div>
 
-        {/* Leaderboard Section */}
-        <div className="leaderboard">
-          <h2>Leaderboard</h2>
+      {/* Leaderboards placed under the games */}
+      <div className="leaderboard-container">
+        {/* <div className="leaderboard">
+          <h2>Leaderboard 1</h2>
           <ol>
             {user.subUsers.map((subUser, index) => (
               <li key={index}>
-                {/* <span className="name">{subUser.firstName} {subUser.lastName}</span> */}
                 <span className="username">{subUser.username}</span>
               </li>
             ))}
           </ol>
+        </div> */}
+        {/* <div className="leaderboard">
+          <h2>Leaderboard 2</h2>
+          <ol>
+            {user.subUsers.map((subUser, index) => (
+              <li key={index}>
+                <span className="username">{subUser.username}</span>
+              </li>
+            ))}
+          </ol>
+        </div> */}
+      </div>
+    </>
+  ) : (
+    <>
+      {/* Single game layout */}
+      <div className="game-container">
+        <h1 className="game-title">{game.title}</h1>
+        <iframe
+          ref={iframeRef}
+          src={game.link}
+          className="game-iframe"
+          allow="camera; microphone; fullscreen"
+          allowFullScreen
+          title={game.title}
+        />
+        <div className="fullscreen-button-container">
+          <button onClick={handleFullscreen} className="btn btn-primary">
+            Fullscreen
+          </button>
         </div>
       </div>
+
+      {/* Single leaderboard */}
+      <div className="leaderboard">
+        <h2>Leaderboard</h2>
+        <ol>
+          {user.subUsers.map((subUser, index) => (
+            <li key={index}>
+              <span className="username">{subUser.username}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </>
+  )}
+</div>
+
     </>
   );
 }

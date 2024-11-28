@@ -4,6 +4,8 @@ import { useUserService } from "_services";
 import { Nav } from "_components";
 import EditProfileModal from "./EditProfileModal";
 import "./GamingProfile.css";
+import profile from "../(public)/assets/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg"
+import Image from "next/image";
 
 interface Achievement {
   id: string;
@@ -185,8 +187,8 @@ export default function GamingProfile() {
       <div className="gaming-profile-container">
         <div className="profile-header">
           <div className="profile-avatar">
-            <img
-              // src={profileData.avatar || "/api/placeholder/150/150"}
+            <Image
+              src={profile}
               alt="Profile Avatar"
             />
             <div className="level-badge">Level {profileData.level}</div>

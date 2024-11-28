@@ -11,7 +11,7 @@
 
 .game-iframe {
   margin-top: 20px;
-  width: 800px;
+  width: 750px !important;
   height: 600px;
   border: none;
 }
@@ -113,3 +113,48 @@
 .leaderboard li:not(:hover) {
   opacity: 0.3;
 }
+
+/* Game container for side-by-side games */
+.game-side-by-side {
+  display: flex;
+  justify-content: space-between;
+  /* gap: 10px; Add spacing between the games */
+  /* margin-bottom: 20px; Add spacing below games */
+  margin-top: 100px;
+}
+
+
+
+/* Close button for the second game */
+.close-button {
+  position: absolute;
+  top: 80px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+/* Leaderboard container */
+.leaderboard-container {
+  display: flex;
+  justify-content: space-around; /* Evenly distribute leaderboards */
+  gap: 20px; /* Add spacing between the leaderboards */
+  margin-top: 20px; /* Space above the leaderboards */
+}
+
+/* Game iframe styling */
+.game-iframe {
+  width: 800px;
+  height: 600px;
+  border: none;
+}
+
+/* Leaderboard styles */
+

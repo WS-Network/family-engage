@@ -33,6 +33,7 @@ function FriendsModal2({ friendsModal, setFriendsModal, friends }: FriendsModalP
     const [activeTab, setActiveTab] = useState<"friends" | "messages" | "chat">("friends");
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [newMessage, setNewMessage] = useState("");
+    const [invitedFriends, setInvitedFriends] = useState<string[]>([]); // Tracks invited users
     const userService = useUserService();
 
     useEffect(() => {
@@ -49,10 +50,10 @@ function FriendsModal2({ friendsModal, setFriendsModal, friends }: FriendsModalP
             if (!currentUser) {
                 throw new Error("No current user found");
             }
-            const response = await fetch('/api/users/friends', {
+            const response = await fetch("/api/users/friends", {
                 headers: {
-                    userId: currentUser.id
-                }
+                    userId: currentUser.id,
+                },
             });
 
             if (!response.ok) {
@@ -101,15 +102,24 @@ function FriendsModal2({ friendsModal, setFriendsModal, friends }: FriendsModalP
         setTimeout(() => {
             setChatMessages((prev) => [
                 ...prev,
-                { sender: "friend", text: `Hello! This is a demo reply from ${selectedUser?.firstName}.` }
+                { sender: "friend", text: `Hello! This is a demo reply from ${selectedUser?.firstName}.` },
             ]);
         }, 1000);
     };
 
-    const filteredFriends = currentFriends.filter(friend =>
-        friend.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        friend.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        friend.lastName?.toLowerCase().includes(searchQuery.toLowerCase())
+    const handleInvite = (friendId: string) => {
+        if (!invitedFriends.includes(friendId)) {
+            setInvitedFriends((prev) => [...prev, friendId]); // Save the invited user's ID
+            localStorage.setItem("invited", "true");
+            console.log(`User ID ${friendId} has been invited.`);
+        }
+    };
+
+    const filteredFriends = currentFriends.filter(
+        (friend) =>
+            friend.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            friend.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            friend.lastName?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -188,6 +198,19 @@ function FriendsModal2({ friendsModal, setFriendsModal, friends }: FriendsModalP
                                                 >
                                                     <i className="bx bx-chat" />
                                                 </button>
+                                                <button
+                                                    className={`btn btn-sm ${
+                                                        invitedFriends.includes(friend.id)
+                                                            ? "btn-secondary"
+                                                            : "btn-success"
+                                                    }`}
+                                                    onClick={() => handleInvite(friend.id)}
+                                                    disabled={invitedFriends.includes(friend.id)}
+                                                >
+                                                    {invitedFriends.includes(friend.id)
+                                                        ? "Invited"
+                                                        : "Invite"}
+                                                </button>
                                             </div>
                                         </div>
                                     ))}
@@ -221,7 +244,9 @@ function FriendsModal2({ friendsModal, setFriendsModal, friends }: FriendsModalP
                                 {chatMessages.map((message, index) => (
                                     <div
                                         key={index}
-                                        className={`chat-message ${message.sender === "user" ? "user-message" : "friend-message"}`}
+                                        className={`chat-message ${
+                                            message.sender === "user" ? "user-message" : "friend-message"
+                                        }`}
                                     >
                                         {message.text}
                                     </div>
@@ -243,7 +268,10 @@ function FriendsModal2({ friendsModal, setFriendsModal, friends }: FriendsModalP
                                     Send
                                 </button>
                             </div>
-                            <button className="btn btn-secondary" onClick={() => setActiveTab("messages")}>
+                            <button
+                                className="btn btn-secondary"
+                                onClick={() => setActiveTab("messages")}
+                            >
                                 Back to Messages
                             </button>
                         </div>

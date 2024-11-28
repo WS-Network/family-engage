@@ -73,7 +73,15 @@ export default function Users() {
 
   return (
     <>
-      <Link href="/users/add" className="btn btn-sm btn-primary mb-2" style={{ marginTop: "20px" }}>
+      <Link
+  href="/users/add"
+  className="btn btn-sm btn-primary mb-2"
+  style={{
+    marginTop: "60px",
+    backgroundColor: "#0CA4BD", // Set background color
+    borderColor: "#0CA4BD", // Optional: Update border color if necessary
+  }}
+>
         Add Family Member
       </Link>
       <table className="table table-striped">
