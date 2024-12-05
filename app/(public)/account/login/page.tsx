@@ -9,6 +9,8 @@ import { useForm } from "react-hook-form";
 // import { Checkbox } from '@radix-ui/react-checkbox';
 import { useUserService } from "_services";
 import Popup from "_components/Popup";
+import Image from "next/image";
+import logo from "../../../(public)/assets/Logo.png";
 
 interface LoginFormData {
   username: string;
@@ -196,7 +198,7 @@ export default function Login() {
             />
             <i className="bx bxs-lock-alt"></i>
           </div>
-          <button type="submit" className="btn">
+          <button style={{ backgroundColor: "#0CA4BD", width: "30%", color: '#FFF'}} type="submit" className="btn">
             Register
           </button>
           <p>or register with social platforms</p>
@@ -211,9 +213,11 @@ export default function Login() {
       {/* Toggle Panel */}
       <div className="toggle-box">
         <div className="toggle-panel toggle-left">
-          <h1>Family Engage</h1>
-          <p>Don't have an account?</p>
+          {/* <h1>Family Engage</h1> */}
+          <Image src={logo} alt="Logo" width={120} height={90} />
+          <p style={{marginTop: "10px", color: '#000'}}>Don't have an account?</p>
           <button
+            style={{ backgroundColor: "#FFF", width: "30%"}}
             className="btn register-btn"
             onClick={() => setIsActive(true)}
           >
@@ -222,9 +226,10 @@ export default function Login() {
         </div>
 
         <div className="toggle-panel toggle-right">
-          <h1>Family Engage</h1>
-          <p>Already have an account?</p>
-          <button className="btn login-btn" onClick={() => setIsActive(false)}>
+        <Image src={logo} alt="Logo" width={120} height={90} />
+
+          <p style={{marginTop: "10px", color: '#000'}}>Already have an account?</p>
+          <button style={{ backgroundColor: "#FFF", width: "30%"}} className="btn login-btn" onClick={() => setIsActive(false)}>
             Login
           </button>
         </div>

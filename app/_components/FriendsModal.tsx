@@ -88,7 +88,7 @@ function FriendsModal({ friendsModal, setFriendsModal }: FriendsModalProps) {
             <div className="friends-list">
               {filteredUsers.map((user) => (
                 <div key={user.id} className="friend-item">
-                  <span>{`${user.firstName} ${user.lastName} (${user.username})`}</span>
+                  <span>{`@${user.username}`}</span>
                   <button onClick={() => addFriend(user.id)} className="add-friend-button">
                     Add Friend
                   </button>

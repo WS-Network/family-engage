@@ -23,9 +23,10 @@
 
 /* Leaderboard styles */
 .leaderboard {
-  background-color: #123;
-  color: #eee;
+  background-color: #085e6b;
+  color: #FFF;
   width: 450px;
+  border-radius: 30px !important;
   /* margin-top: 20px; */
   border-radius: 5px;
   box-shadow: 2px 5px 15px rgba(18, 35, 51, 0.5); /* Adjusted rgba value */
@@ -40,6 +41,7 @@
   padding: 15px 0;
   margin: 0;
   text-align: center;
+  font-family: cursive;
 }
 
 .leaderboard p {
@@ -61,6 +63,7 @@
   transition-duration: .3s;
   font-size: 18px;
   text-align: center;
+  font-family: cursive;
 }
 
 .leaderboard li::before {
@@ -75,6 +78,7 @@
   position: absolute;
   left: 20%;
   font-size: 15px;
+  font-family: cursive;
 }
 
 .leaderboard li:nth-of-type(1) {

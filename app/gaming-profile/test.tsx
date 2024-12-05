@@ -3,10 +3,7 @@ import { useState, useEffect } from "react";
 import { useUserService } from "_services";
 import { Nav } from "_components";
 import EditProfileModal from "./EditProfileModal";
-// import { ProfileData } from "./types";
 import "./GamingProfile.css";
-import profilePlaceholder from "../(public)/assets/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg";
-import Image from "next/image";
 
 interface Achievement {
   id: string;
@@ -46,14 +43,18 @@ export default function GamingProfile() {
   const userService = useUserService();
 
   useEffect(() => {
+    console.log("useEffect triggered");
+
     const fetchProfileData = async () => {
       try {
         const user = await userService.getCurrent();
+        console.log("Fetched user:", user);
+
+        // Mock data - replace with actual API call
         const mockData: ProfileData = {
           username: user?.username || "Player",
           level: 42,
           bio: "Passionate gamer who loves casual games!",
-          
           totalPlayTime: 1250,
           playedGames: [
             {
@@ -126,16 +127,29 @@ export default function GamingProfile() {
     };
 
     fetchProfileData();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array to ensure it runs only once on mount
 
-  const handleProfileUpdate = (updatedData: Partial<ProfileData>) => {
-    setProfileData((prev) => {
-      if (!prev) return null;
-      return { ...prev, ...updatedData,
-          playedGames: updatedData.playedGames || prev.playedGames,
-          achievements: updatedData.achievements || prev.achievements, };
-    });
+  const handleProfileUpdate = async (editedProfile: any) => {
+    try {
+      setProfileData((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          username: editedProfile.username,
+          bio: editedProfile.bio,
+          avatar: editedProfile.avatar
+            ? URL.createObjectURL(editedProfile.avatar)
+            : prev.avatar,
+          playedGames: editedProfile.playedGames || prev.playedGames,
+          achievements: editedProfile.achievements || prev.achievements,
+        };
+      });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
+
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
       case "Common":
@@ -161,6 +175,7 @@ export default function GamingProfile() {
       </div>
     );
   }
+
   const playedGames = profileData.playedGames || [];
   const achievements = profileData.achievements || [];
 
@@ -170,28 +185,23 @@ export default function GamingProfile() {
       <div className="gaming-profile-container">
         <div className="profile-header">
           <div className="profile-avatar">
-            <Image
-              src={profileData.avatar || profilePlaceholder}
+            <img
+              // src={profileData.avatar || "/api/placeholder/150/150"}
               alt="Profile Avatar"
-              width={150}
-              height={150}
             />
             <div className="level-badge">Level {profileData.level}</div>
           </div>
           <div className="profile-info">
-            <h1>{profileData.username}'s Gaming Profile</h1>
+            <div className="profile-header-top">
+              <h1>{profileData.username}'s Gaming Profile</h1>
+              <button
+                className="edit-profile-button"
+                onClick={() => setIsEditModalOpen(true)}
+              >
+                Edit Profile
+              </button>
+            </div>
             <p className="profile-bio">{profileData.bio}</p>
-            {/* <p className="profile-favorite-game">
-              Favorite Game: {profileData.favoriteGame || "Not Set"}
-            </p> */}
-            <button
-              className="edit-profile-button"
-              onClick={() => setIsEditModalOpen(true)}
-            >
-              Edit Profile
-            </button>
-          </div>
-          {/* <p className="profile-bio">{profileData.bio}</p> */}
             <div className="profile-stats">
               <div className="stat-item">
                 <span className="stat-label">Total Play Time</span>
@@ -208,7 +218,9 @@ export default function GamingProfile() {
                 <span className="stat-value">{achievements.length} Unlocked</span>
               </div>
             </div>
+          </div>
         </div>
+
         <div className="played-games-section">
           <h2>Played Games</h2>
           <div className="played-games-grid">
@@ -283,16 +295,12 @@ export default function GamingProfile() {
             ))}
           </div>
         </div>
-            
 
         <EditProfileModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           currentProfile={profileData}
-          onSave={(updatedData) => {
-            handleProfileUpdate(updatedData);
-            setIsEditModalOpen(false);
-          }}
+          onSave={handleProfileUpdate}
         />
       </div>
     </div>
