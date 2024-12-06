@@ -135,3 +135,27 @@
   padding: 20px;
   color: #666;
 }
+
+/* Chat Messages */
+.chat-messages {
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.chat-message {
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 70%;
+}
+
+.chat-message.sent {
+  background-color: #bad2e6;
+  align-self: flex-end;
+}
+
+.chat-message.received {
+  background-color: #f8d7da;
+  align-self: flex-start;
+}

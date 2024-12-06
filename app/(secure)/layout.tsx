@@ -4,12 +4,11 @@ import { redirect } from "next/navigation";
 import { auth } from "_helpers/server";
 import { Alert, Nav } from "_components";
 
-export default Layout;
-
-function Layout({ children }: { children: React.ReactNode }) {
-  // if not logged in redirect to login page
+export default function Layout({ children }: { children: React.ReactNode }) {
+  // Server-side authentication check
   if (!auth.isAuthenticated()) {
-    const returnUrl = encodeURIComponent(headers().get("x-invoke-path") || "/");
+    const currentPath = headers().get("x-invoke-path") || "/";
+    const returnUrl = encodeURIComponent(currentPath);
     redirect(`/account/login?returnUrl=${returnUrl}`);
   }
 

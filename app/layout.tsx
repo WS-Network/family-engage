@@ -6,8 +6,6 @@ export const metadata = {
   title: "family-engage",
 };
 
-export default Layout;
-
 function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -27,3 +25,5 @@ function Layout({ children }: { children: React.ReactNode }) {
     </html>
   );
 }
+
+export default Layout;
