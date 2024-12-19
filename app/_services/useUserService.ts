@@ -60,8 +60,8 @@ function useUserService(): IUserService {
             try {
                 await fetch.post('/api/account/register', user);
                 // router.push('/account/login');
-                const returnUrl = searchParams.get('returnUrl') || '/';
-                router.push(returnUrl);
+                // const returnUrl = searchParams.get('returnUrl') || '/';
+                // router.push(returnUrl);
             } catch (error: any) {
                 toast.error(error.message || 'Registration failed.');
             }

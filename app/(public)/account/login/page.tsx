@@ -145,7 +145,7 @@ export default function Login() {
         await userService.register(newUser);
 
         // Automatically log the user in only if registration is successful
-        await userService.login(newUser.username, newUser.password);
+        // await userService.login(newUser.username, newUser.password);
         
         console.log("Google Sign-In Successful:", user);
       } catch (error) {
