@@ -51,21 +51,21 @@ export default function Home() {
       id: 4,
       title: "Slice Frenzy",
       description: "Slice the fruit with your body",
-      link: "https://scratch.mit.edu/projects/526019080/embed",
+      link: "https://scratch.mit.edu/projects/540812189/embed",
       imageSrc: FruitNinja, // StaticImageData
     },
     {
       id: 5,
       title: "Turbo Trails",
       description: "Race cars on a track, avoid obstacles using your hands",
-      link: "https://scratch.mit.edu/projects/526019080/embed",      
+      link: "https://scratch.mit.edu/projects/47204454/embed",      
       imageSrc: racing, // StaticImageData  
     },
     {
       id: 6,
       title: "Pop Mania",
       description: "pop the balloons using your hands",
-      link: "https://scratch.mit.edu/projects/526019080/embed",
+      link: "https://scratch.mit.edu/projects/394893603/embed",
       imageSrc: pop, // StaticImageData  
     }
   ];

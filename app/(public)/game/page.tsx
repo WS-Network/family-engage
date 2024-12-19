@@ -159,6 +159,16 @@ export default function Game() {
             </div>
           </>
         )}
+        <div className="leaderboard">
+        <h2>Leaderboard</h2>
+        <ol>
+          {user.subUsers.map((subUser, index) => (
+            <li key={index}>
+              <span className="username">{subUser.username}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
         <button 
           onClick={toggleGuide} 
           className="btn btn-secondary" 
