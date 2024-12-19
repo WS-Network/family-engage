@@ -78,7 +78,7 @@ export default function Login() {
       await userService.register(user);
 
       // Automatically log the user in only if registration is successful
-      await userService.login(user.username, user.password);
+      // await userService.login(user.username, user.password);
 
       // Show the popup after successful registration
       setShowPopup(true);
