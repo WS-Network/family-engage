@@ -1,67 +1,74 @@
-import { NextResponse } from "next/server";
-import multer from "multer";
-import path from "path";
-import fs from "fs";
+import { createRouter } from 'next-connect';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-const uploadDirectory = path.join(process.cwd(), "public/uploads");
+// Extend NextApiRequest to include Multer's file type
+interface ExtendedNextApiRequest extends NextApiRequest {
+  file?: Express.Multer.File;
+}
+
+// Define upload directory
+const uploadDirectory = path.join(process.cwd(), 'public/uploads');
 
 // Ensure the upload directory exists
 if (!fs.existsSync(uploadDirectory)) {
   fs.mkdirSync(uploadDirectory, { recursive: true });
 }
 
-// Configure multer for storage
+// Configure Multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    console.log("Setting destination for upload...");
     cb(null, uploadDirectory);
   },
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${file.originalname}`;
-    console.log("Setting filename:", uniqueName);
     cb(null, uniqueName);
   },
 });
 
 const upload = multer({ storage });
 
-async function parseFormData(req: Request): Promise<Express.Multer.File> {
-  return new Promise((resolve, reject) => {
-    const multerHandler = upload.single("file");
-    multerHandler(req as any, {} as any, (err: any) => {
-      if (err) {
-        console.error("Multer error:", err);
-        return reject(err);
-      }
-      resolve((req as any).file);
-    });
-  });
-}
+const router = createRouter<ExtendedNextApiRequest, NextApiResponse>();
 
-export async function POST(req: Request) {
+// Use middleware to handle file upload
+router.use((req, res, next) => {
+  upload.single('file')(req as any, res as any, next as any);
+});
+
+// Define POST handler
+router.post((req, res) => {
   try {
-    console.log("Request received for file upload...");
-
-    const file = await parseFormData(req);
-    console.log("File successfully uploaded:", file);
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ message: 'No file uploaded.' });
+    }
 
     const filePath = `/uploads/${file.filename}`;
-    console.log("Generated file path:", filePath);
-
-    return NextResponse.json({ avatarUrl: filePath });
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error("Error during file upload:", error.message);
-      return NextResponse.json(
-        { message: "File upload failed", error: error.message },
-        { status: 500 }
-      );
-    } else {
-      console.error("Unexpected error during file upload:", error);
-      return NextResponse.json(
-        { message: "Unexpected error occurred" },
-        { status: 500 }
-      );
-    }
+    return res.status(200).json({ avatarUrl: filePath });
+  } catch (error: unknown) {
+    console.error('Error during file upload:', (error as Error).message);
+    return res.status(500).json({
+      message: 'File upload failed',
+      error: (error as Error).message,
+    });
   }
-}
+});
+
+// Disable default body parser
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default router.handler({
+  onError: (err, req, res) => {
+    console.error((err as Error).stack);
+    res.status(500).end('Something broke!');
+  },
+  onNoMatch: (req, res) => {
+    res.status(404).end('Page is not found');
+  },
+});

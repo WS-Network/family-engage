@@ -273,7 +273,7 @@ export default function GamingProfile() {
                   </div>
                   <div className="achievement-stats">
                     <span className="achievement-date">
-                      Unlocked:{" "}
+                      Unlocked: {" "}
                       {new Date(achievement.dateUnlocked).toLocaleDateString()}
                     </span>
                     <span className="achievement-percentage">

@@ -41,51 +41,35 @@ export default function EditProfileModal({
     const file = e.target.files?.[0];
     if (file) {
       setFormData({ ...formData, avatar: file });
-      setPreviewUrl(URL.createObjectURL(file));
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-  
+    setIsSubmitting(true);
+
     try {
-      let avatarUrl = currentProfile.avatar;
-  
-      // Handle avatar upload if a new file is selected
-      if (formData.avatar) {
-        const uploadData = new FormData();
-        uploadData.append("file", formData.avatar);
-        uploadData.append("username", formData.username);
-  
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: uploadData,
-        });
-  
-        if (!response.ok) {
-          throw new Error("Failed to upload the profile picture.");
-        }
-  
-        const result = await response.json();
-        avatarUrl = result.avatarUrl; // Use uploaded file URL
-      }
-  
       const updatedData: Partial<ProfileData> = {
         username: formData.username,
         bio: formData.bio,
-        avatar: avatarUrl,
+        avatar: previewUrl, // Using the local preview URL as the avatar
         favoriteGame: formData.favoriteGame,
       };
-  
-      onSave(updatedData); // Call parent function to save changes
-      onClose(); // Close the modal
+
+      onSave(updatedData);
+      onClose();
     } catch (error: any) {
       console.error("Error during profile update:", error.message);
       toast.error(error.message || "An error occurred while updating the profile.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
-  
-  
 
   if (!isOpen) return null;
 
@@ -112,7 +96,7 @@ export default function EditProfileModal({
               onChange={(e) =>
                 setFormData({ ...formData, username: e.target.value })
               }
-              disabled={isSubmitting} // Disable input while submitting
+              disabled={isSubmitting}
             />
           </div>
           <div className="form-group">
@@ -145,7 +129,7 @@ export default function EditProfileModal({
           <button
             type="button"
             onClick={onClose}
-            disabled={isSubmitting} // Prevent closing during submission
+            disabled={isSubmitting}
           >
             Cancel
           </button>
