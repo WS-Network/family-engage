@@ -2,7 +2,8 @@ import { create } from 'zustand';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAlertService } from '_services';
 import { useFetch } from '_helpers/client';
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner';
+
 export { useUserService };
 
 // Define SubUser interface
@@ -12,7 +13,7 @@ interface SubUser {
     lastName: string;
 }
 
-// user state store
+// Define the initial state for the user store
 const initialState = {
     users: undefined,
     user: undefined,
@@ -41,23 +42,25 @@ function useUserService(): IUserService {
                 const returnUrl = searchParams.get('returnUrl') || '/';
                 router.push(returnUrl);
             } catch (error: any) {
-                alertService.error(error.message);
+                toast.error(error.message || 'Login failed.');
             }
         },
 
         logout: async () => {
-            await fetch.post('/api/account/logout');
-            router.push('/account/login');
+            try {
+                await fetch.post('/api/account/logout');
+                router.push('/account/login');
+            } catch (error: any) {
+                toast.error(error.message || 'Logout failed.');
+            }
         },
 
         register: async (user) => {
             try {
                 await fetch.post('/api/account/register', user);
-                // alertService.success('Registration successful', true);
-                toast.success('Registration successful, go back to login');
                 router.push('/account/login');
             } catch (error: any) {
-                alertService.error(error.message);
+                toast.error(error.message || 'Registration failed.');
             }
         },
 
@@ -67,7 +70,7 @@ function useUserService(): IUserService {
                 userStore.setState({ users: fetchedUsers });
                 return fetchedUsers;
             } catch (error: any) {
-                alertService.error(error.message);
+                toast.error(error.message || 'Failed to fetch users.');
                 return [];
             }
         },
@@ -78,7 +81,7 @@ function useUserService(): IUserService {
                 const fetchedUser = await fetch.get(`/api/users/${id}`);
                 userStore.setState({ user: fetchedUser });
             } catch (error: any) {
-                alertService.error(error.message);
+                toast.error(error.message || 'Failed to fetch user.');
             }
         },
 
@@ -91,7 +94,7 @@ function useUserService(): IUserService {
                 }
                 return currentUser;
             } catch (error: any) {
-                alertService.error('Unable to fetch current user.');
+                toast.error('Unable to fetch current user.');
                 return null;
             }
         },
@@ -106,16 +109,16 @@ function useUserService(): IUserService {
                 });
                 return subUsers;
             } catch (error: any) {
-                throw new Error(error.message || 'Failed to fetch sub-users');
+                throw new Error(error.message || 'Failed to fetch sub-users.');
             }
         },
 
         create: async (user) => {
             try {
                 await fetch.post('/api/users', user);
-                alertService.success('User created successfully');
+                toast.success('User created successfully.');
             } catch (error: any) {
-                alertService.error(error.message);
+                toast.error(error.message || 'Failed to create user.');
             }
         },
 
@@ -125,9 +128,9 @@ function useUserService(): IUserService {
                 if (id === currentUser?.id) {
                     userStore.setState({ currentUser: { ...currentUser, ...params } });
                 }
-                alertService.success('User updated successfully');
+                toast.success('User updated successfully.');
             } catch (error: any) {
-                alertService.error(error.message);
+                toast.error(error.message || 'Failed to update user.');
             }
         },
 
@@ -148,9 +151,9 @@ function useUserService(): IUserService {
                 if (response.deletedSelf) {
                     router.push('/account/login');
                 }
-                alertService.success('User deleted successfully');
+                toast.success('User deleted successfully.');
             } catch (error: any) {
-                alertService.error(error.message);
+                toast.error(error.message || 'Failed to delete user.');
             }
         },
 
@@ -167,62 +170,55 @@ function useUserService(): IUserService {
                     throw new Error(`Failed to create sub-user: ${response.statusText}`);
                 }
 
-                alertService.success('Sub-user created successfully');
+                toast.success('Sub-user created successfully.');
             } catch (error: any) {
-                alertService.success('Sub-user created successfully');
+                // toast.error(error.message || 'Failed to create sub-user.');
                 throw error;
             }
         },
-        deleteSubUser: async (username: string, userId: string) => {
-            try {
-                console.log("Sending DELETE request with:", { userId, username });
-        
-                const response = await fetch.delete('/api/users/subusers', {
-                    method: 'DELETE',
-                    body: JSON.stringify({
-                        userId,
-                        username,
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-        
-                const responseData = await response.json();
-                console.log("Backend response:", responseData);
-        
-                if (!response.ok) {
-                    throw new Error(responseData.error || 'Failed to delete sub-user');
-                }
-        
-                alertService.success('Sub-user deleted successfully');
-            } catch (error: any) {
-                console.error("Error deleting sub-user:", error.message);
-                alertService.error(error.message || 'Failed to delete sub-user');
-                throw error;
-            }
-        },
-        
-        
-        
-        
+
+
+   deleteSubUser: async (userId: string, username: string) => {
+      console.log("Sending DELETE request with:", { userId, username });
+
+      try {
+        const response = await fetch.delete("/api/users/subusers", {
+          userId,
+          username,
+        });
+
+        console.log("Response object:", response);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Error response from backend:", errorData);
+          throw new Error(errorData.error || "Failed to delete sub-user.");
+        }
+
+        toast.success("Sub-user deleted successfully.");
+      } catch (error) {
+        console.error("Error deleting sub-user:", error);
+        toast.error(error.message || "Failed to delete sub-user.");
+        throw error;
+      }
+    },
         
 
         addFriend: async (friendId: string) => {
             try {
                 const userId = currentUser?.id || (await fetch.get('/api/users/current')).id;
                 if (!userId) {
-                    throw new Error('No current user found');
+                    throw new Error('No current user found.');
                 }
 
                 await fetch.post('/api/users/friends', {
                     userId,
-                    friendId
+                    friendId,
                 });
 
-                alertService.success('Family member added successfully');
+                toast.success('Family member added successfully.');
             } catch (error: any) {
-                alertService.error(error.message || 'Failed to add family member');
+                toast.error(error.message || 'Failed to add family member.');
                 throw error;
             }
         },
@@ -231,19 +227,17 @@ function useUserService(): IUserService {
             try {
                 const userId = currentUser?.id || (await fetch.get('/api/users/current')).id;
                 if (!userId) {
-                    throw new Error('No current user found');
+                    throw new Error('No current user found.');
                 }
 
                 await fetch.delete('/api/users/friends', {
-                    body: JSON.stringify({
-                        userId,
-                        friendId
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, friendId }),
                 });
 
-                alertService.success('Family member removed successfully');
+                toast.success('Family member removed successfully.');
             } catch (error: any) {
-                alertService.error(error.message || 'Failed to remove family member');
+                toast.error(error.message || 'Failed to remove family member.');
                 throw error;
             }
         },
@@ -252,21 +246,19 @@ function useUserService(): IUserService {
             try {
                 const userId = currentUser?.id || (await fetch.get('/api/users/current')).id;
                 if (!userId) {
-                    throw new Error('No current user found');
+                    throw new Error('No current user found.');
                 }
 
                 const response = await fetch.get('/api/users/friends', {
-                    headers: {
-                        'userId': userId
-                    }
+                    headers: { 'userId': userId },
                 });
 
                 return response;
             } catch (error: any) {
-                alertService.error(error.message || 'Failed to fetch family members');
+                toast.error(error.message || 'Failed to fetch family members.');
                 throw error;
             }
-        }
+        },
     };
 }
 
@@ -275,7 +267,7 @@ interface IUser {
     firstName: string;
     lastName: string;
     username: string;
-    password: string;
+    password?: string;
     isDeleting?: boolean;
     subUsers: SubUser[];
 }

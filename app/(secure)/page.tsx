@@ -7,6 +7,7 @@ import startwarsimg from "../(public)/assets/StarWars Game.png";
 import flappyBirdicon from "../(public)/assets/Flappy_Bird_icon.png";
 import Link from "next/link";
 // import './page.css'
+import { Footer } from "_components/Footer";
 
 // Define the Game interface for TypeScript
 interface Game {
@@ -100,6 +101,7 @@ export default function Home() {
           ))}
         </div>
       </div>
+      <Footer/>
     </>
   );
 }

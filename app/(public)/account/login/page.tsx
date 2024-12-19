@@ -1,5 +1,5 @@
 "use client";
-
+//REGISTER*
 import React, { useState } from "react";
 import "./login.css";
 import "boxicons/css/boxicons.min.css";

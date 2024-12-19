@@ -46,49 +46,43 @@ export async function GET(req: Request) {
 }
 
 export async function DELETE(req: NextRequest) {
-    console.log("DELETE route hit");
-
+    console.log("DELETE route invoked");
+  
     try {
-        // Parse the incoming request body
-        const body = await req.json();
-        console.log("Received body:", body);
-
-        const { userId, username } = body;
-
-        // Validate input fields
-        if (!userId || !username) {
-            console.error("Validation error: Missing required fields", { userId, username });
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-        }
-
-        // Find the main user by userId
-        const mainUser = await User.findById(userId);
-        console.log("Main user found:", mainUser);
-
-        if (!mainUser) {
-            console.error("Main user not found with ID:", userId);
-            return NextResponse.json({ error: 'Main user not found' }, { status: 404 });
-        }
-
-        // Filter out the sub-user by username
-        const updatedSubUsers = mainUser.subUsers.filter(
-            (subUser: { username: string }) => subUser.username !== username
-        );
-        console.log("Updated sub-users list:", updatedSubUsers);
-
-        if (updatedSubUsers.length === mainUser.subUsers.length) {
-            console.error("Sub-user not found with username:", username);
-            return NextResponse.json({ error: 'Sub-user not found' }, { status: 404 });
-        }
-
-        // Save the updated sub-users list
-        mainUser.subUsers = updatedSubUsers;
-        await mainUser.save();
-        console.log("Sub-user deleted successfully");
-
-        return NextResponse.json({ message: 'Sub-user deleted successfully' }, { status: 200 });
+      // Parse query parameters
+      const { searchParams } = new URL(req.url);
+      const userId = searchParams.get("userId");
+      const username = searchParams.get("username");
+  
+      if (!userId || !username) {
+        console.error("Validation error: Missing required fields", { userId, username });
+        return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      }
+  
+      // Find the parent user
+      const mainUser = await User.findById(userId);
+      if (!mainUser) {
+        console.error("Parent user not found with ID:", userId);
+        return NextResponse.json({ error: "Parent user not found" }, { status: 404 });
+      }
+  
+      // Remove the subuser
+      const updatedSubUsers = mainUser.subUsers.filter(
+        (subUser: { username: string }) => subUser.username !== username
+      );
+  
+      if (updatedSubUsers.length === mainUser.subUsers.length) {
+        console.error("Sub-user not found with username:", username);
+        return NextResponse.json({ error: "Sub-user not found" }, { status: 404 });
+      }
+  
+      mainUser.subUsers = updatedSubUsers;
+      await mainUser.save();
+  
+      console.log("Sub-user deleted successfully.");
+      return NextResponse.json({ message: "Sub-user deleted successfully" }, { status: 200 });
     } catch (error) {
-        console.error("Unexpected error in DELETE route:", error);
-        return NextResponse.json({ error: 'Failed to delete sub-user' }, { status: 500 });
+      console.error("Unexpected error in DELETE route:", error);
+      return NextResponse.json({ error: "Failed to delete sub-user" }, { status: 500 });
     }
-}
+  }

@@ -7,6 +7,7 @@ import EditProfileModal from "./EditProfileModal";
 import "./GamingProfile.css";
 import profilePlaceholder from "../(public)/assets/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg";
 import Image from "next/image";
+import { Footer } from "_components/Footer";
 
 interface Achievement {
   id: string;
@@ -165,6 +166,7 @@ export default function GamingProfile() {
   const achievements = profileData.achievements || [];
 
   return (
+    <>
     <div style={{ marginTop: "5rem" }}>
       <Nav />
       <div className="gaming-profile-container">
@@ -296,5 +298,7 @@ export default function GamingProfile() {
         />
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }

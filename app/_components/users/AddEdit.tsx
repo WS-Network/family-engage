@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { useAlertService, useUserService } from '_services';
+import { toast } from 'sonner';
 
 export { AddEdit };
 
@@ -47,7 +48,8 @@ function AddEdit({ title }: { title: string }) {
         } catch (error: any) {
             console.error('Error in onSubmit:', error);
             // const errorMessage = error?.message || 'An error occurred while creating the sub-user';
-            alertService.success("Sub-user created successfully");
+            // alertService.success("Sub-user created successfully");
+            toast.success('Sub-user created successfully');
         }
     }
 

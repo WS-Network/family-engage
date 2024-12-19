@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Spinner } from "_components";
 import { useUserService } from "_services";
+import { Footer } from "_components/Footer";
+import { toast } from "sonner";
+import { useAlertService } from "_services";
 
 type SubUser = {
   username: string;
@@ -23,49 +26,44 @@ export default function Users() {
   const userService = useUserService();
   const [user, setUser] = useState<User | null>(null); // User can be null initially
   const [loading, setLoading] = useState(true);
-  const [deleting, setDeleting] = useState<string | null>(null); // ID of the subUser being deleted
-
+  const [deleting, setDeleting] = useState<string | null>(null); // Username of the subuser being deleted
+  const alertService = useAlertService();
   useEffect(() => {
-    // Fetch the current user and their subUsers
     const fetchUser = async () => {
       try {
         const data: User | null = await userService.getCurrent();
-        console.log("Fetched user data:", data); // Debugging log
-        setUser(data); // This will be a User object or null
+        console.log("Fetched user data:", data);
+        setUser(data);
       } catch (error) {
         console.error("Error fetching user:", error);
-        setUser(null); // Handle the error case
+        setUser(null); // Handle error by setting user to null
       } finally {
-        setLoading(false); // Stop loading once the request is complete
+        setLoading(false);
       }
     };
 
-    fetchUser(); // Call the async function inside useEffect
+    fetchUser();
   }, []);
 
   const handleDelete = async (username: string) => {
+    window.location.reload();
     if (!user) return;
 
     try {
-        const userId = user.id; // Get the main user's ID
-        console.log("Deleting sub-user with payload:", { userId, username });
+      const userId = user.id; // Parent user ID
+      console.log("Deleting sub-user with payload:", { userId, username });
 
-        setDeleting(username); // Indicate which user is being deleted
-        await userService.deleteSubUser(username, userId); // Pass both username and userId
-        setUser((prevUser) => {
-            if (!prevUser) return null;
-            return {
-                ...prevUser,
-                subUsers: prevUser.subUsers.filter((subUser) => subUser.username !== username),
-            };
-        }); // Update state to remove the deleted user
-    } catch (error) {
-        console.error("Error deleting sub-user:", error);
+      setDeleting(username); // Indicate the username being deleted
+      await userService.deleteSubUser(userId, username); // Pass `userId` and `username`
+
+      // Force page refresh after successful deletion
+     toast.success("Sub-user deleted successfully.");
     } finally {
-        setDeleting(null); // Clear the deleting state
+      setDeleting(null); // Clear deleting state
+      // alertService.success("Sub-user deleted successfully");
+      
     }
-};
-
+  };
 
   if (loading) {
     return <Spinner />;
@@ -73,15 +71,16 @@ export default function Users() {
 
   return (
     <>
+      <h1 style={{ marginTop: "10%" }}>”Every Family Begins with Love - Add Yours!”</h1>
       <Link
-  href="/users/add"
-  className="btn btn-sm btn-primary mb-2"
-  style={{
-    marginTop: "60px",
-    backgroundColor: "#0CA4BD", // Set background color
-    borderColor: "#0CA4BD", // Optional: Update border color if necessary
-  }}
->
+        href="/users/add"
+        className="btn btn-sm btn-primary mb-2"
+        style={{
+          marginTop: "60px",
+          backgroundColor: "#0CA4BD",
+          borderColor: "#0CA4BD",
+        }}
+      >
         Add Family Member
       </Link>
       <table className="table table-striped">
@@ -97,6 +96,7 @@ export default function Users() {
           <TableBody />
         </tbody>
       </table>
+      <Footer />
     </>
   );
 
