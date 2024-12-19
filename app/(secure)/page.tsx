@@ -5,6 +5,9 @@ import Image, { StaticImageData } from "next/image";
 import { useEffect } from "react";
 import startwarsimg from "../(public)/assets/StarWars Game.png";
 import flappyBirdicon from "../(public)/assets/Flappy_Bird_icon.png";
+import FruitNinja from "../(public)/assets/FruitNinja.png";
+import racing from "../(public)/assets/racing.png";
+import pop from "../(public)/assets/pop.png";
 import Link from "next/link";
 // import './page.css'
 import { Footer } from "_components/Footer";
@@ -24,7 +27,7 @@ export default function Home() {
   const Games: Game[] = [
     {
       id: 1,
-      title: "Paddle Game",
+      title: "Bounce Blitz",
       description: "Move the paddle using motion control, with your whole body",
       link: "https://scratch.mit.edu/projects/237053914/embed",
       imageSrc:
@@ -32,18 +35,39 @@ export default function Home() {
     },
     {
       id: 2,
-      title: "Star Wars",
+      title: "Galaxy Guardians",
       description: "Avoid Space Projectiles",
       link: "https://scratch.mit.edu/projects/341217162/embed",
       imageSrc: startwarsimg, // StaticImageData
     },
     {
       id: 3,
-      title: "Flappy Bird",
+      title: "Wing Dash",
       description: "Move the bird using motion sensor, avoid obstacles",
       link: "https://scratch.mit.edu/projects/526019080/embed",
       imageSrc: flappyBirdicon, // StaticImageData
     },
+    {
+      id: 4,
+      title: "Slice Frenzy",
+      description: "Slice the fruit with your body",
+      link: "https://scratch.mit.edu/projects/526019080/embed",
+      imageSrc: FruitNinja, // StaticImageData
+    },
+    {
+      id: 5,
+      title: "Turbo Trails",
+      description: "Race cars on a track, avoid obstacles using your hands",
+      link: "https://scratch.mit.edu/projects/526019080/embed",      
+      imageSrc: racing, // StaticImageData  
+    },
+    {
+      id: 6,
+      title: "Pop Mania",
+      description: "pop the balloons using your hands",
+      link: "https://scratch.mit.edu/projects/526019080/embed",
+      imageSrc: pop, // StaticImageData  
+    }
   ];
 
   const handlePlayGame = (game: Game) => {

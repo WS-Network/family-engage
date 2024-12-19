@@ -2,15 +2,21 @@
 
 import React, { useEffect, useState } from "react";
 import { useUserService } from "_services";
-import "./FriendModal2.css";
 import { db } from "../config/firebaseConfig";
-import { collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
+import {
+    collection,
+    addDoc,
+    query,
+    where,
+    orderBy,
+    onSnapshot,
+    serverTimestamp,
+} from "firebase/firestore";
+import "./FriendModal2.css";
 
 interface FriendsModalProps {
     friendsModal: boolean;
     setFriendsModal: (value: boolean) => void;
-    friends: User[];
-    onAddFriend: (friendId: string) => void;
 }
 
 interface User {
@@ -21,7 +27,7 @@ interface User {
 }
 
 interface Message {
-    sender: string; // The sender's ID
+    sender: string; // Sender's ID
     text: string;
     timestamp: string;
 }
@@ -38,7 +44,6 @@ const FriendsModal2: React.FC<FriendsModalProps> = ({ friendsModal, setFriendsMo
     const [error, setError] = useState<string | null>(null);
     const userService = useUserService();
 
-    // Fetch the user ID on mount
     useEffect(() => {
         const fetchUserId = async () => {
             try {
@@ -56,7 +61,6 @@ const FriendsModal2: React.FC<FriendsModalProps> = ({ friendsModal, setFriendsMo
         fetchUserId();
     }, []);
 
-    // Fetch friends when the modal is opened
     useEffect(() => {
         if (friendsModal && userId) {
             fetchFriends();
@@ -145,6 +149,34 @@ const FriendsModal2: React.FC<FriendsModalProps> = ({ friendsModal, setFriendsMo
         }
     };
 
+    const handleRemoveFriend = async (friendId: string) => {
+        if (!userId) {
+            console.error("User ID is not available");
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/users/friends", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId, friendId }),
+            });
+
+            if (!response.ok) {
+                const errorDetails = await response.json();
+                console.error("Error removing friend:", errorDetails);
+                alert(errorDetails.error || "Failed to remove friend.");
+                return;
+            }
+
+            alert("Friend removed successfully.");
+            fetchFriends();
+        } catch (err) {
+            console.error("Error removing friend:", err);
+            alert("An error occurred while trying to remove the friend.");
+        }
+    };
+
     const generateChatId = (friendId: string): string => {
         return [userId, friendId].sort().join("_");
     };
@@ -154,82 +186,111 @@ const FriendsModal2: React.FC<FriendsModalProps> = ({ friendsModal, setFriendsMo
             .some((field) => field?.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
+    const chatButtonStyle = {
+        padding: "8px 16px",
+        margin: "4px",
+        backgroundColor: "#007bff",
+        color: "#fff",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer",
+    };
+
+    const removeButtonStyle = {
+        padding: "8px 16px",
+        margin: "4px",
+        backgroundColor: "#dc3545",
+        color: "#fff",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer",
+    };
+
     return (
-        <>
-            <div className={`friends-backdrop ${friendsModal ? "active" : ""}`} onClick={() => setFriendsModal(false)}>
-                <div className="friends-modal" onClick={(e) => e.stopPropagation()}>
-                    <span className="close-button" onClick={() => setFriendsModal(false)}>
-                        &times;
-                    </span>
-                    <div className="friends-content">
-                        <h1>{activeTab === "chat" ? `Chat with ${selectedUser?.firstName}` : "Friends"}</h1>
-                        {activeTab === "friends" && (
-                            <>
-                                <input
-                                    type="text"
-                                    className="search-bar"
-                                    placeholder="Search friends..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                {error && <div className="error">{error}</div>}
-                                {loading ? (
-                                    <div className="loading">Loading friends...</div>
-                                ) : filteredFriends.length === 0 ? (
-                                    <div className="no-friends">No friends found</div>
-                                ) : (
-                                    <div className="friends-list">
-                                        {filteredFriends.map((friend) => (
-                                            <div key={friend.id} className="friend-item">
-                                                <div className="friend-info">
-                                                    <span className="friend-name">
-                                                        {friend.firstName} {friend.lastName}
-                                                    </span>
-                                                    <span className="friend-username">@{friend.username}</span>
-                                                </div>
+        <div
+            className={`friends-backdrop ${friendsModal ? "active" : ""}`}
+            onClick={() => setFriendsModal(false)}
+        >
+            <div className="friends-modal" onClick={(e) => e.stopPropagation()}>
+                <span className="close-button" onClick={() => setFriendsModal(false)}>
+                    &times;
+                </span>
+                <div className="friends-content">
+                    <h1>{activeTab === "chat" ? `Chat with ${selectedUser?.firstName}` : "Friends"}</h1>
+                    {activeTab === "friends" && (
+                        <>
+                            <input
+                                type="text"
+                                className="search-bar"
+                                placeholder="Search friends..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            {error && <div className="error">{error}</div>}
+                            {loading ? (
+                                <div className="loading">Loading friends...</div>
+                            ) : filteredFriends.length === 0 ? (
+                                <div className="no-friends">No friends found</div>
+                            ) : (
+                                <div className="friends-list">
+                                    {filteredFriends.map((friend) => (
+                                        <div key={friend.id} className="friend-item">
+                                            <div className="friend-info">
+                                                <span className="friend-name">
+                                                    {friend.firstName} {friend.lastName}
+                                                </span>
+                                                <span className="friend-username">@{friend.username}</span>
+                                            </div>
+                                            <div className="friend-actions">
                                                 <button
-                                                    className="add-friend-button"
+                                                    style={chatButtonStyle}
                                                     onClick={() => handleOpenChat(friend)}
                                                 >
                                                     Chat
                                                 </button>
+                                                <button
+                                                    style={removeButtonStyle}
+                                                    onClick={() => handleRemoveFriend(friend.id)}
+                                                >
+                                                    Remove
+                                                </button>
                                             </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </>
-                        )}
-                        {activeTab === "chat" && selectedUser && (
-                            <div className="chat">
-                                <div className="chat-messages">
-                                    {chatMessages.map((msg, i) => (
-                                        <div
-                                            key={i}
-                                            className={`chat-message ${
-                                                msg.sender === userId ? "sent" : "received"
-                                            }`}
-                                        >
-                                            <span>{msg.text}</span>
                                         </div>
                                     ))}
                                 </div>
-                                <input
-                                    type="text"
-                                    className="search-bar"
-                                    placeholder="Type a message..."
-                                    value={newMessage}
-                                    onChange={(e) => setNewMessage(e.target.value)}
-                                    onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                                />
-                                <button className="add-friend-button" onClick={handleSendMessage}>
-                                    Send
-                                </button>
+                            )}
+                        </>
+                    )}
+                    {activeTab === "chat" && selectedUser && (
+                        <div className="chat">
+                            <div className="chat-messages">
+                                {chatMessages.map((msg, i) => (
+                                    <div
+                                        key={i}
+                                        className={`chat-message ${
+                                            msg.sender === userId ? "sent" : "received"
+                                        }`}
+                                    >
+                                        <span>{msg.text}</span>
+                                    </div>
+                                ))}
                             </div>
-                        )}
-                    </div>
+                            <input
+                                type="text"
+                                className="search-bar"
+                                placeholder="Type a message..."
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                            />
+                            <button className="add-friend-button" onClick={handleSendMessage}>
+                                Send
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

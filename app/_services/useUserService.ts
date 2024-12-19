@@ -35,6 +35,7 @@ function useUserService(): IUserService {
         currentUser,
 
         login: async (username, password) => {
+            toast.success('trying to login');
             alertService.clear();
             try {
                 const currentUser = await fetch.post('/api/account/login', { username, password });
@@ -58,7 +59,9 @@ function useUserService(): IUserService {
         register: async (user) => {
             try {
                 await fetch.post('/api/account/register', user);
-                router.push('/account/login');
+                // router.push('/account/login');
+                const returnUrl = searchParams.get('returnUrl') || '/';
+                router.push(returnUrl);
             } catch (error: any) {
                 toast.error(error.message || 'Registration failed.');
             }
@@ -227,17 +230,19 @@ function useUserService(): IUserService {
             try {
                 const userId = currentUser?.id || (await fetch.get('/api/users/current')).id;
                 if (!userId) {
-                    throw new Error('No current user found.');
+                    throw new Error('No current user found');
                 }
 
                 await fetch.delete('/api/users/friends', {
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId, friendId }),
+                    body: JSON.stringify({
+                        userId,
+                        friendId
+                    })
                 });
 
-                toast.success('Family member removed successfully.');
+                alertService.success('Family member removed successfully');
             } catch (error: any) {
-                toast.error(error.message || 'Failed to remove family member.');
+                alertService.error(error.message || 'Failed to remove family member');
                 throw error;
             }
         },

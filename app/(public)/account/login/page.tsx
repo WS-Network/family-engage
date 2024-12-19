@@ -11,6 +11,8 @@ import { useUserService } from "_services";
 import Popup from "_components/Popup";
 import Image from "next/image";
 import logo from "../../../(public)/assets/Logo.png";
+import { doc, setDoc } from "firebase/firestore";
+import { db, auth, provider, signInWithPopup } from "../../../config/firebaseConfig";
 
 interface LoginFormData {
   username: string;
@@ -71,10 +73,18 @@ export default function Login() {
     };
 
     console.log("Transformed Registration Data:", user);
-    await userService.register(user);
 
-    // Show the popup after successful registration
-    setShowPopup(true);
+    try {
+      await userService.register(user);
+
+      // Automatically log the user in only if registration is successful
+      await userService.login(user.username, user.password);
+
+      // Show the popup after successful registration
+      setShowPopup(true);
+    } catch (error) {
+      console.error("Registration Error:", error);
+    }
   }
 
   function generateUniqueId(): string {
@@ -91,6 +101,59 @@ export default function Login() {
     console.log("Accepted Terms:", acceptedTerms);
 
     setShowPopup(false);
+  }
+
+  function generateRandomPassword() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+    const passwordLength = 12;
+    let password = "";
+    for (let i = 0; i < passwordLength; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      password += chars[randomIndex];
+    }
+    return password;
+  }
+
+  async function handleGoogleLogin() {
+    try {
+      // Perform Google Sign-In
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // Save user data to Firestore
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(userRef, {
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        uid: user.uid,
+      });
+
+      // Use the Google displayName as username and generate a random password
+      const newUser: IUser = {
+        id: generateUniqueId(),
+        subUsers: [],
+        firstName: user.displayName?.split(" ")[0] || "",
+        lastName: user.displayName?.split(" ")[1] || "",
+        username: user.displayName || "User",
+        password: generateRandomPassword(),
+      };
+
+      console.log("Transformed Registration Data:", newUser);
+
+      try {
+        await userService.register(newUser);
+
+        // Automatically log the user in only if registration is successful
+        await userService.login(newUser.username, newUser.password);
+        
+        console.log("Google Sign-In Successful:", user);
+      } catch (error) {
+        console.error("Google Registration Error:", error);
+      }
+    } catch (error: any) {
+      console.error("Google Sign-In Error:", error);
+    }
   }
 
   return (
@@ -132,7 +195,7 @@ export default function Login() {
           </button>
           <p>or login with social platforms</p>
           <div className="social-icons">
-            <a href="#">
+          <a onClick={handleGoogleLogin}>
               <i className="bx bxl-google"></i>
             </a>
           </div>
@@ -203,7 +266,7 @@ export default function Login() {
           </button>
           <p>or register with social platforms</p>
           <div className="social-icons">
-            <a href="#">
+            <a onClick={handleGoogleLogin}>
               <i className="bx bxl-google"></i>
             </a>
           </div>
