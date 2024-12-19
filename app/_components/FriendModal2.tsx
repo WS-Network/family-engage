@@ -42,6 +42,7 @@ const FriendsModal2: React.FC<FriendsModalProps> = ({ friendsModal, setFriendsMo
     const [searchQuery, setSearchQuery] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [invitedFriends, setInvitedFriends] = useState<string[]>([]); // Tracks invited users
     const userService = useUserService();
 
     useEffect(() => {
@@ -177,6 +178,14 @@ const FriendsModal2: React.FC<FriendsModalProps> = ({ friendsModal, setFriendsMo
         }
     };
 
+    const handleInvite = (friendId: string) => {
+        if (!invitedFriends.includes(friendId)) {
+            setInvitedFriends((prev) => [...prev, friendId]); // Save the invited user's ID
+            localStorage.setItem("invited", "true");
+            console.log(`User ID ${friendId} has been invited.`);
+        }
+    };
+
     const generateChatId = (friendId: string): string => {
         return [userId, friendId].sort().join("_");
     };
@@ -195,6 +204,16 @@ const FriendsModal2: React.FC<FriendsModalProps> = ({ friendsModal, setFriendsMo
         borderRadius: "4px",
         cursor: "pointer",
     };
+
+    const inviteButtonStyle = (isInvited: boolean) => ({
+        padding: "8px 16px",
+        margin: "4px",
+        backgroundColor: isInvited ? "#6c757d" : "#28a745",
+        color: "#fff",
+        border: "none",
+        borderRadius: "4px",
+        cursor: isInvited ? "not-allowed" : "pointer",
+    });
 
     const removeButtonStyle = {
         padding: "8px 16px",
@@ -253,6 +272,13 @@ const FriendsModal2: React.FC<FriendsModalProps> = ({ friendsModal, setFriendsMo
                                                     onClick={() => handleRemoveFriend(friend.id)}
                                                 >
                                                     Remove
+                                                </button>
+                                                <button
+                                                    style={inviteButtonStyle(invitedFriends.includes(friend.id))}
+                                                    onClick={() => handleInvite(friend.id)}
+                                                    disabled={invitedFriends.includes(friend.id)}
+                                                >
+                                                    {invitedFriends.includes(friend.id) ? "Invited" : "Invite"}
                                                 </button>
                                             </div>
                                         </div>
